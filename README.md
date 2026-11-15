@@ -1,4 +1,4 @@
-# Bloom — homepage
+# MULTUM.AI — homepage
 
 A single-page, scroll-driven landing page. Three background videos are scrubbed by the
 scroll position and painted onto a canvas, with glass cards and text fading in over them.
@@ -35,7 +35,7 @@ Upload the folder as-is to any static host: Vercel, Netlify, Cloudflare Pages, G
 - **Share preview:** `og:image` and `twitter:image` point to `media/og.jpg`. Social networks
   need an absolute URL, so change both to `https://your-domain/media/og.jpg` once you have a
   domain. You can also add `<link rel="canonical" href="https://your-domain/">`.
-- **Menu:** the menu items (Atelier, Collections, Rituals, About, Contact) are placeholders
+- **Menu:** the menu items (О multum.ai, Курсы, Для чего тебе AI?, О нас, Отзывы) are placeholders
   with no link. Add an `href` to each `<a>`, in both the desktop and the mobile menu, when
   those pages exist.
 - **Email form:** front-end only. It shows a success message but sends nothing. Connect it to

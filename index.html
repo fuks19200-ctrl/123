@@ -1,736 +1,979 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bloom — A flower with no field.</title>
-<meta name="description" content="An olfactive atelier. Species are designed as data, run until they hold, and compiled into extrait. Five have been released.">
-<meta name="theme-color" content="#000000">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Bloom">
-<meta property="og:title" content="Bloom — A flower with no field.">
-<meta property="og:description" content="An olfactive atelier. Species are designed as data, run until they hold, and compiled into extrait. Five have been released.">
-<meta property="og:image" content="media/og.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bloom — A flower with no field.">
-<meta name="twitter:description" content="An olfactive atelier. Species are designed as data, run until they hold, and compiled into extrait. Five have been released.">
-<meta name="twitter:image" content="media/og.jpg">
+<title>MULTUM.AI — школа нейросетей</title>
+<meta name="description" content="Практическое обучение работе с AI для тех, кто хочет создавать, автоматизировать и зарабатывать с помощью нейросетей.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&amp;family=Manrope:wght@400;500&amp;family=Space+Grotesk:wght@400;500;600&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* One accent, kept in hex and rgb form because some rules need alpha. */
-  --accent:#CB8DFF;
-  --accent-rgb:203,141,255;
-  --accent-hover:#d9a8ff;
-  /* Shared translucent-surface material. */
-  --glass-fill:rgba(255,255,255,.16);
-  --glass-border:rgba(255,255,255,.15);
+  --accent:#CB8DFF; --accent-rgb:203,141,255; --text:#f5f1f7; --muted:rgba(245,241,247,.67);
+  --serif:"Fredoka","Nunito",Arial,sans-serif; --sans:"Fredoka","Nunito",Arial,sans-serif;
 }
-*,*::before,*::after{box-sizing:border-box}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:#000}
-::-webkit-scrollbar-thumb{background:#1f2937;border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#374151}
-body{background:#000;color:#fff;overflow-x:hidden;margin:0;padding:0;font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif}
-
-/* --- CONTAINER --- */
-.scroll-container{position:relative;width:100%;height:500vh;background:#000}
-.fixed-viewport{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000}
-
-/* --- BRAND HEADER --- */
-.premium-brand-header{position:absolute;top:clamp(24px,3vw,48px);left:clamp(24px,3vw,48px);z-index:45;display:flex;align-items:center;gap:clamp(8px,0.8vw,14px);user-select:none;pointer-events:auto;will-change:transform,opacity,filter}
-@media(max-width:768px){.premium-brand-header{top:24px;left:24px}}
-.premium-brand-text{font-family:"Instrument Serif",serif;font-size:clamp(22px,2.2vw,32px);font-weight:500;color:#fff;letter-spacing:-0.03em}
-.premium-brand-logo-svg{width:clamp(28px,2.6vw,44px);height:auto;opacity:0.95}
-
-/* --- NAV HEADER --- */
-.premium-header-nav{position:absolute;top:clamp(24px,3vw,48px);right:clamp(24px,3vw,48px);z-index:50;pointer-events:auto;will-change:transform,opacity,filter}
-@media(max-width:768px){.premium-header-nav{top:24px;right:24px}}
-.premium-nav-desktop{display:block}
-.premium-nav-list{display:flex;gap:2px;margin:0;padding:5px;list-style:none;align-items:center;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(12,7,14,.30) 46%,rgba(8,4,10,.44));backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:inset 0 1px 0 rgba(255,255,255,.30),inset 0 -1px 0 rgba(255,255,255,.05),0 18px 40px -18px rgba(0,0,0,.85)}
-.premium-nav-item{margin:0;padding:0}
-.premium-nav-link{display:block;background-color:transparent;color:rgba(255,255,255,.74);font-family:"Manrope",sans-serif;font-size:clamp(12px,0.85vw,14px);font-weight:500;letter-spacing:.01em;text-decoration:none;padding:clamp(8px,0.62vw,11px) clamp(15px,1.15vw,21px);border-radius:999px;transition:color .3s ease,background-color .3s ease,box-shadow .3s ease;white-space:nowrap}
-.premium-nav-link:hover{color:#fff;background-color:rgba(255,255,255,.10);box-shadow:0 0 22px -2px rgba(var(--accent-rgb),.45)}
-.premium-nav-link:active{color:#fff;background-color:rgba(255,255,255,.16)}
-.premium-nav-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px;color:#fff}
-@media(prefers-reduced-motion:reduce){.premium-nav-link{transition:none}}
-
-/* --- HAMBURGER --- */
-.premium-hamburger{display:none}
-@media(max-width:768px){
-  .premium-nav-desktop{display:none}
-  .premium-hamburger{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:44px;height:44px;background:rgba(255,255,255,.12);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--glass-border);border-radius:10px;cursor:pointer;padding:0;z-index:60;position:relative}
-  .premium-hamburger:active{transform:scale(0.92)}
-}
-.premium-hamburger-line{display:block;width:20px;height:1.5px;background:#fff;border-radius:2px;transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .2s ease;transform-origin:center}
-.premium-hamburger-line.top-open{transform:translateY(6.5px) rotate(45deg)}
-.premium-hamburger-line.mid-open{opacity:0}
-.premium-hamburger-line.bot-open{transform:translateY(-6.5px) rotate(-45deg)}
-
-/* --- MOBILE MENU --- */
-.premium-mobile-menu{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);display:flex;align-items:center;justify-content:center;pointer-events:auto;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}
-.premium-mobile-menu.open{opacity:1;visibility:visible}
-.premium-mobile-menu-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:8px}
-.premium-mobile-menu-link{font-family:"Instrument Serif",Georgia,serif;font-size:40px;font-weight:400;color:#fff;text-decoration:none;letter-spacing:-0.02em;line-height:1.3;padding:8px 24px;transition:opacity .2s ease}
-.premium-mobile-menu-link:hover,.premium-mobile-menu-link:active{opacity:0.6}
-
-/* --- BOTANICAL CARD --- */
-.premium-botanical-card{position:absolute;bottom:clamp(24px,3vw,48px);left:clamp(24px,3vw,48px);width:clamp(380px,30vw,540px);max-width:90vw;background:var(--glass-fill);backdrop-filter:blur(80px);-webkit-backdrop-filter:blur(80px);border-radius:0;padding:clamp(32px,3.2vw,56px);z-index:45;pointer-events:auto;border:1px solid var(--glass-border);box-shadow:0 30px 60px rgba(0,0,0,.3);will-change:transform,opacity,filter}
-@media(max-width:768px){.premium-botanical-card{bottom:32px;left:24px;padding:32px 24px;width:calc(100vw - 48px)}}
-.premium-card-title{font-family:"Instrument Serif",serif;font-size:72px;line-height:1.05;font-weight:400;color:#fff;margin:0 0 clamp(10px,1.2vw,20px) 0;letter-spacing:-0.01em;width:324px;max-width:100%}
-.premium-card-title .italic{font-style:italic}
-@media(max-width:768px){.premium-card-title{font-size:38px;margin-bottom:10px}}
-.premium-card-subtext{font-family:"Manrope",sans-serif;font-size:clamp(12px,1vw,15px);line-height:1.6;font-weight:400;color:rgba(255,255,255,.64);letter-spacing:0.01em;margin:0;width:clamp(260px,22vw,380px);max-width:100%}
-@media(max-width:768px){.premium-card-subtext{font-size:13px}}
-
-/* --- CTA CIRCLE --- */
-.premium-action-circle{position:absolute;right:calc(-1*(clamp(80px,7vw,112px)/2));bottom:clamp(20px,2.5vw,40px);width:clamp(80px,7vw,112px);height:clamp(80px,7vw,112px);border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .25s cubic-bezier(.16,1,.3,1),background-color .2s ease;z-index:55}
-.premium-action-circle:hover{transform:scale(1.08);background:var(--accent-hover)}
-.premium-action-circle:active{transform:scale(0.94)}
-.premium-action-circle svg{width:clamp(30px,2.8vw,44px);height:clamp(18px,1.8vw,28px);stroke:#fff;stroke-width:1.75;fill:none;transition:transform .25s ease}
-.premium-action-circle:hover svg{transform:translateX(4px)}
-@media(max-width:768px){.premium-action-circle{width:64px;height:64px;right:-16px;bottom:-32px}.premium-action-circle svg{width:38px;height:22px}}
-
-/* --- FEATURE CARDS --- */
-.premium-features-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:max-content;max-width:95%;display:grid;grid-template-columns:repeat(3,280px);justify-content:center;gap:16px;z-index:46;pointer-events:none;align-items:stretch}
-.premium-feature-card{background:var(--glass-fill);backdrop-filter:blur(80px);-webkit-backdrop-filter:blur(80px);border:1px solid var(--glass-border);border-radius:0;padding:24px;width:280px;height:440px;box-shadow:0 30px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;transition:border-color .3s ease;will-change:transform,opacity,filter}
-.premium-feature-card:hover{border-color:rgba(255,255,255,.45)}
-.premium-feature-icon-wrapper{margin-bottom:32px;color:var(--accent);display:flex;align-items:center;justify-content:center}
-.premium-feature-icon-wrapper svg{width:clamp(36px,3.5vw,48px);height:clamp(36px,3.5vw,48px);opacity:0.95}
-.premium-feature-title{font-family:"Instrument Serif",Georgia,serif;font-size:24px;font-weight:400;line-height:1.15;color:#fff;margin:auto 0 8px 0;letter-spacing:-0.01em}
-.premium-feature-desc{font-family:"Manrope",sans-serif;font-size:clamp(12px,1vw,14px);line-height:20px;font-weight:400;color:rgba(255,255,255,.64);margin:0;letter-spacing:0.015em}
-@media(max-width:768px){
-  .premium-features-container{grid-template-columns:1fr;width:calc(100% - 48px);left:24px;transform:translate(0,-50%);top:50%;gap:16px;height:auto;overflow-y:auto;max-height:80vh}
-  .premium-feature-card{padding:24px;width:100%;height:auto;min-height:240px}
-  .premium-feature-icon-wrapper{margin-bottom:24px}
-}
-
-/* --- MISSION TEXT --- */
-.mission-container{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:40;padding:0 24px}
-@media(min-width:768px){.mission-container{padding:0 48px}}
-.mission-inner{position:relative;width:100%;max-width:64rem;height:100%;display:flex;align-items:center;justify-content:center}
-.mission-para{position:absolute;text-align:center;user-select:none;pointer-events:none;font-family:"Instrument Serif",Georgia,serif;font-size:1.875rem;color:rgba(255,255,255,.95);line-height:1.375;letter-spacing:-0.025em;will-change:transform,opacity,filter}
-@media(min-width:768px){.mission-para{font-size:3rem}}
-@media(min-width:1024px){.mission-para{font-size:3.75rem}}
-.mission-pill{display:inline-block;padding:2px 16px;margin:0 6px;background:var(--accent);color:#fff;border-radius:9999px;vertical-align:middle;font-family:"Instrument Serif",Georgia,serif}
-@media(min-width:768px){.mission-pill{padding:4px 24px;margin:0 10px}}
-
-/* --- FEEDBACK FORM --- */
-.feedback-container{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:50;padding:0 24px}
-@media(min-width:768px){.feedback-container{padding:0 48px}}
-.feedback-form-card{position:relative;width:100%;max-width:28rem;background:rgba(0,0,0,.45);backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);border:1px solid rgba(255,255,255,.1);padding:32px;text-align:center;pointer-events:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;user-select:none;will-change:transform,opacity,filter}
-@media(min-width:768px){.feedback-form-card{padding:48px}}
-.fb-logo{width:40px;height:40px;margin-bottom:20px}
-.fb-title{font-family:"Instrument Serif",Georgia,serif;font-size:1.5rem;color:#fff;font-weight:400;letter-spacing:-0.025em;margin:0 0 8px 0;line-height:1.2;white-space:nowrap}
-@media(min-width:768px){.fb-title{font-size:1.875rem}}
-.fb-sub{font-family:"Space Grotesk",sans-serif;font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:0.05em;margin:0 0 28px 0;line-height:1.625;max-width:20rem}
-@media(min-width:768px){.fb-sub{font-size:12px}}
-.fb-form{width:100%;display:flex;flex-direction:column;gap:14px}
-.fb-input{width:100%;padding:12px 20px;background:rgba(255,255,255,.05);color:#fff;border:1px solid rgba(255,255,255,.1);font-family:"Space Grotesk",sans-serif;font-size:14px;letter-spacing:0.025em;text-align:center;outline:none;transition:all .3s ease}
-.fb-input::placeholder{color:rgba(255,255,255,.3)}
-.fb-input:hover,.fb-input:focus{background:rgba(255,255,255,.1)}
-.fb-input:focus{border-color:var(--accent)}
-@media(min-width:768px){.fb-input{padding:16px 20px;font-size:16px}}
-.fb-btn{width:100%;padding:14px 24px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:"Space Grotesk",sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;transition:all .3s ease}
-.fb-btn:hover{background:var(--accent-hover)}
-.fb-btn:active{transform:scale(0.98)}
-.fb-btn.submitted{background:#059669;cursor:default}
-@media(min-width:768px){.fb-btn{padding:16px 24px}}
-.fb-success{margin-top:16px;font-family:"Space Grotesk",sans-serif;font-size:12px;color:#34d399;font-weight:500;letter-spacing:0.025em;line-height:1.625;display:none}
-.fb-success.show{display:block;animation:fadeIn .5s ease}
-
-/* --- VIDEO BG --- */
-.bg-wrapper{position:absolute;top:-5%;left:-5%;right:-5%;bottom:-5%;width:110%;height:110%;pointer-events:none;user-select:none;transform:translate3d(0,0,0);transition:transform .4s cubic-bezier(.15,.85,.35,1)}
-.bg-wrapper video{position:absolute;top:0;left:0;width:1px;height:1px;opacity:.01;pointer-events:none}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:#000}
+body{margin:0;background:#000;color:var(--text);font-family:var(--sans);font-size:15px;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#050405}::-webkit-scrollbar-thumb{background:#2a2230;border-radius:10px}
+.scroll-container{position:relative;min-height:100vh;background:#000}
+.fixed-bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:#000}
+.bg-wrapper{position:absolute;inset:-5%;width:110%;height:110%;pointer-events:none;transition:transform .5s cubic-bezier(.15,.85,.35,1)}
+.bg-wrapper video{position:absolute;width:1px;height:1px;opacity:.01;pointer-events:none}
 .bg-wrapper canvas{width:100%;height:100%;display:block}
-
-/* --- LOADING --- */
-.loading-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:60;transition:opacity 1s ease;padding:24px;text-align:center}
-.loading-screen.hidden{opacity:0;pointer-events:none}
-.loading-spinner{width:64px;height:64px;margin-bottom:16px;animation:spin 2s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:0.1em;color:#6b7280;text-transform:uppercase;animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-/* --- ERROR --- */
-.error-screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:55;padding:24px;text-align:center}
-.error-screen.show{display:flex}
-.error-card{padding:16px;border:1px solid #1f2937;border-radius:4px;background:#09090b;max-width:28rem}
-.error-title{color:#ef4444;font-family:"JetBrains Mono",monospace;font-size:14px;margin:0 0 8px 0}
-.error-msg{color:#9ca3af;font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.625;margin:0}
-/* ============================================================
-   RESPONSIVE
-   Phone and tablet overrides. They come last so they win over the
-   base rules above; the desktop layout is not affected.
-   ============================================================ */
-
-/* Legibility over the bright frames of the video (the glass hand
-   washes white serif text out at every width, not just on mobile). */
-.mission-para{text-shadow:0 2px 24px rgba(0,0,0,.55),0 1px 4px rgba(0,0,0,.4)}
-
-/* svh doesn't change when the mobile URL bar hides, so the scrub
-   can't jump mid-scroll the way it does with vh. */
-@supports (height:100svh){.scroll-container{height:500svh}}
-
-/* --- Tablet: the three feature cards share the width instead of fixed 280px columns --- */
-@media(min-width:768px) and (max-width:1023.98px){
-  .premium-features-container{grid-template-columns:repeat(3,minmax(0,1fr));width:calc(100% - 64px);left:32px;transform:translate(0,-50%);max-width:none}
-  .premium-feature-card{width:100%;height:auto;min-height:320px;padding:22px}
-  .premium-feature-title{font-size:21px}
+.bg-vignette{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,transparent 28%,rgba(0,0,0,.16) 68%,rgba(0,0,0,.52) 100%);pointer-events:none}
+.page{position:relative;z-index:2}
+header{position:fixed;top:28px;left:clamp(24px,4vw,60px);right:clamp(24px,4vw,60px);display:flex;justify-content:space-between;align-items:center;z-index:100}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.7)}
+.brand svg{width:32px;height:32px}.brand span{font-family:var(--serif);font-size:27px;letter-spacing:.02em}
+.nav{display:flex;gap:5px;padding:5px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(0,0,0,.18);backdrop-filter:blur(18px);box-shadow:0 15px 40px rgba(0,0,0,.22)}
+.nav a{color:rgba(255,255,255,.76);text-decoration:none;font-size:12px;padding:9px 15px;border-radius:999px;transition:.25s}
+.nav a:hover{color:#fff;background:rgba(203,141,255,.14)}
+.section{min-height:100svh;position:relative;display:flex;align-items:center;padding:120px clamp(28px,8vw,130px);overflow:hidden}
+.section-inner{width:100%;max-width:1280px;margin:0 auto}
+.eyebrow{font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:28px;text-shadow:0 3px 16px rgba(0,0,0,.7)}
+h1,h2,h3,p{margin-top:0}
+.hero{min-height:100svh;align-items:center}
+.hero-copy{width:min(760px,72vw);transform:translateY(4vh);padding-top:70px}
+.hero h1{font-family:var(--serif);font-size:clamp(56px,7.6vw,112px);font-weight:700;line-height:.82;letter-spacing:-.045em;margin:0 0 34px;text-shadow:0 5px 25px rgba(0,0,0,.82),0 2px 5px rgba(0,0,0,.75)}
+.hero h1 em{font-style:italic}
+.hero-lead{font-size:clamp(19px,2vw,29px);line-height:1.35;max-width:720px;color:#f4eff5;text-shadow:0 4px 20px rgba(0,0,0,.82),0 2px 5px rgba(0,0,0,.65);margin-bottom:20px}
+.hero-desc{font-size:clamp(14px,1.2vw,18px);line-height:1.75;max-width:760px;color:rgba(255,255,255,.72);text-shadow:0 3px 18px rgba(0,0,0,.9)}
+.hero-arrow{position:absolute;right:7vw;bottom:15vh;width:72px;height:72px;border-radius:50%;background:var(--accent);display:grid;place-items:center;color:#fff;box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 35px rgba(203,141,255,.25);cursor:pointer;transition:.3s}
+.hero-arrow:hover{transform:scale(1.08)}.hero-arrow svg{width:34px}
+/* courses */
+.courses{align-items:center}
+.section-heading{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:44px}
+.section-heading h2{font-family:var(--serif);font-size:clamp(54px,7vw,96px);line-height:.9;font-weight:500;letter-spacing:-.04em;text-shadow:0 5px 25px rgba(0,0,0,.85);margin:0}
+.section-heading p{max-width:470px;color:var(--muted);font-size:15px;line-height:1.7;text-shadow:0 3px 16px rgba(0,0,0,.85);margin:0 0 5px}
+.course-stage{position:relative;height:520px;perspective:1800px;overflow:visible;touch-action:none;user-select:none}
+.course-track{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform-style:preserve-3d}
+.course-card{position:absolute;left:50%;top:50%;width:min(330px,27vw);height:430px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(145deg,rgba(35,27,39,.42),rgba(8,6,10,.26));backdrop-filter:blur(10px);box-shadow:0 30px 80px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.16);padding:26px;display:flex;flex-direction:column;justify-content:space-between;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.22,.8,.2,1),opacity .55s ease,filter .55s ease;cursor:grab}
+.course-card:active{cursor:grabbing}
+.course-number{font-family:var(--serif);font-size:11px;letter-spacing:.16em;color:var(--accent)}
+.course-icon{width:52px;height:52px;border:1px solid rgba(203,141,255,.65);border-radius:50%;display:grid;place-items:center;color:var(--accent);box-shadow:0 0 30px rgba(203,141,255,.12)}
+.course-card h3{font-family:var(--serif);font-size:42px;line-height:.95;font-weight:700;margin:20px 0 14px;text-shadow:0 4px 20px #000}
+.course-card p{font-size:13px;line-height:1.7;color:rgba(255,255,255,.62);margin:0;text-shadow:0 3px 12px #000}
+.course-bottom{display:flex;align-items:end;justify-content:space-between}
+.course-cta{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;opacity:.75}
+.carousel-hint{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.42)}
+/* school */
+.school{justify-content:flex-start}
+.school-copy{width:min(650px,52vw)}
+.school-copy h2{font-family:var(--serif);font-weight:700;font-size:clamp(48px,6vw,82px);line-height:.94;letter-spacing:-.035em;margin:0 0 32px;text-shadow:0 5px 28px rgba(0,0,0,.9)}
+.school-copy p{font-size:clamp(14px,1.05vw,16.5px);line-height:1.85;color:rgba(255,255,255,.86);text-shadow:0 4px 18px rgba(0,0,0,.98),0 1px 2px rgba(0,0,0,.8);margin:0 0 14px}
+.school-copy .accent-line{font-family:var(--serif);font-size:clamp(25px,2.4vw,36px);color:#fff;margin-top:28px;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+/* why */
+.why-grid{display:grid;grid-template-columns:minmax(460px,620px) minmax(340px,520px);gap:clamp(90px,12vw,190px);align-items:center}
+.work-carousel{height:470px;position:relative;perspective:1500px;touch-action:none;margin-right:30px}
+.work-card{position:absolute;left:50%;top:50%;width:235px;height:330px;left:50%;top:50%;border:1px solid rgba(255,255,255,.18);background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(10,6,12,.25));backdrop-filter:blur(6px);box-shadow:0 35px 90px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.22);transition:.75s cubic-bezier(.16,1,.3,1);overflow:hidden;will-change:transform,opacity}
+.work-art{position:absolute;inset:0 0 52px;background:radial-gradient(circle at 35% 25%,rgba(203,141,255,.75),transparent 22%),radial-gradient(circle at 72% 68%,rgba(112,190,255,.36),transparent 28%),linear-gradient(145deg,rgba(255,255,255,.08),rgba(8,5,12,.06));mix-blend-mode:screen;opacity:.8}.art-2{background:radial-gradient(circle at 70% 25%,rgba(203,141,255,.68),transparent 24%),linear-gradient(135deg,rgba(255,255,255,.12),rgba(203,141,255,.08) 40%,rgba(6,5,9,.1))}.art-3{background:radial-gradient(circle at 25% 70%,rgba(117,220,190,.4),transparent 28%),radial-gradient(circle at 75% 30%,rgba(203,141,255,.58),transparent 24%),linear-gradient(160deg,rgba(255,255,255,.1),rgba(8,5,12,.06))}.art-4{background:radial-gradient(circle at 50% 50%,rgba(255,190,225,.48),transparent 24%),radial-gradient(circle at 20% 30%,rgba(203,141,255,.45),transparent 26%),linear-gradient(145deg,rgba(255,255,255,.08),rgba(8,5,12,.08))}.work-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(203,141,255,.28),transparent 35%),linear-gradient(135deg,rgba(255,255,255,.09),transparent 50%);pointer-events:none}
+.work-card .work-label{position:absolute;left:20px;bottom:20px;font-family:var(--serif);font-size:25px;text-shadow:0 3px 16px #000}
+.why-copy h2{font-family:var(--serif);font-size:clamp(48px,5.2vw,72px);font-weight:700;line-height:.9;letter-spacing:-.04em;text-shadow:0 5px 25px rgba(0,0,0,.9);margin-bottom:30px}
+.why-copy p{font-size:15.5px;line-height:1.85;color:rgba(255,255,255,.78);text-shadow:0 3px 18px rgba(0,0,0,.95);margin-bottom:16px}
+.why-copy strong{font-family:var(--serif);font-size:27px;font-weight:500;color:#fff}
+/* about */
+.about{min-height:100svh}
+.about-grid{display:grid;grid-template-columns:minmax(320px,440px) minmax(0,1fr);gap:clamp(60px,8vw,130px);align-items:center}
+.people{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.person{height:500px;position:relative;border:1px solid rgba(255,255,255,.2);background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(8,5,10,.35));box-shadow:0 30px 80px rgba(0,0,0,.5);overflow:hidden}
+.person::after{content:"ФОТО";position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-size:11px;letter-spacing:.2em;color:rgba(255,255,255,.4);text-shadow:0 3px 12px #000}
+.person img{width:100%;height:100%;object-fit:cover;display:block}
+.about-copy h2{font-family:var(--serif);font-size:clamp(52px,6vw,82px);font-weight:700;line-height:.9;margin-bottom:34px;text-shadow:0 5px 25px #000}
+.about-copy p{font-size:15px;line-height:1.9;color:rgba(255,255,255,.78);text-shadow:0 3px 18px #000;margin:0 0 17px;max-width:760px}
+.about-copy .signature{font-family:var(--serif);font-size:31px;color:#fff;margin-top:28px}
+/* form */
+.apply{justify-content:center}
+.apply-inner{max-width:760px}
+.apply h2{font-family:var(--serif);font-size:clamp(56px,7vw,94px);font-weight:700;line-height:.9;text-shadow:0 5px 25px #000;margin-bottom:20px}
+.apply-sub{font-size:15px;color:rgba(255,255,255,.7);line-height:1.7;text-shadow:0 3px 18px #000;margin-bottom:42px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:26px 40px}
+.field{position:relative}
+.field label{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin-bottom:9px;font-weight:700;text-shadow:0 3px 14px rgba(0,0,0,.95)}
+.field input,.field textarea,.field select{width:100%;border:0;border-bottom:1px solid rgba(255,255,255,.34);background:transparent;color:#fff;padding:12px 0;font:inherit;outline:0;box-shadow:none}
+.field textarea{resize:none;min-height:70px}
+.field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.38)}
+.field.full{grid-column:1/-1}
+.form button,.ref-btn{margin-top:14px;border:1px solid rgba(203,141,255,.7);background:rgba(203,141,255,.16);color:#fff;padding:15px 26px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 12px 35px rgba(0,0,0,.35);transition:.25s}
+.form button:hover,.ref-btn:hover{background:rgba(203,141,255,.32);transform:translateY(-2px)}
+.form-card{width:min(500px,100%);margin:10px auto 0;padding:28px 30px;border:1px solid rgba(255,255,255,.18);background:rgba(12,9,14,.30);backdrop-filter:blur(14px);box-shadow:0 30px 90px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.12)}
+.apply-inner{max-width:900px}
+.apply h2{max-width:850px}
+/* reviews */
+.reviews{min-height:100svh}
+.review-stage{position:relative;height:470px;perspective:1700px;touch-action:none}
+.review-card{position:absolute;left:50%;top:50%;width:min(430px,52vw);min-height:300px;padding:34px;border:1px solid rgba(255,255,255,.2);background:linear-gradient(145deg,rgba(32,25,37,.44),rgba(7,5,9,.24));backdrop-filter:blur(10px);box-shadow:0 35px 100px rgba(0,0,0,.52),inset 0 1px rgba(255,255,255,.18);transition:.75s cubic-bezier(.16,1,.3,1);will-change:transform,opacity}
+.stars{color:#CB8DFF;letter-spacing:.12em;font-size:14px;margin-bottom:24px;text-shadow:0 0 15px rgba(203,141,255,.45)}
+.review-text{font-family:var(--serif);font-size:29px;line-height:1.15;text-shadow:0 3px 18px #000;margin-bottom:28px}
+.review-name{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.52)}
+/* footer dark block */
+.footer-section{min-height:85svh;background:linear-gradient(180deg,rgba(3,2,4,.35),rgba(2,1,3,.9) 28%,#030204);padding-bottom:70px}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end}
+.ref-title,.social-title{font-family:var(--serif);font-size:clamp(45px,5vw,72px);font-weight:700;line-height:.9;color:#fff!important;text-shadow:0 5px 25px #000,0 1px 2px #000;margin-bottom:28px}
+.ref-copy,.social-copy{font-size:14px;color:rgba(255,255,255,.6);line-height:1.7;max-width:480px;text-shadow:0 3px 15px #000}
+.ref-row{display:flex;gap:12px;max-width:520px;margin-top:30px}
+.ref-row input{flex:1;min-width:0;background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;padding:15px 16px;font:inherit}
+.social-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.social-links a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.18);padding:12px 18px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:.25s}
+.social-links a:hover{border-color:var(--accent);color:var(--accent)}
+.ad{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.13);padding-top:45px;margin-top:10px}
+.ad small{font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.34);text-transform:uppercase}
+.ad p{font-family:var(--serif);font-size:28px;color:rgba(255,255,255,.75);margin-top:12px}
+@media(max-width:900px){
+  .nav{display:none} header{top:20px}
+  .section{padding:105px 24px 80px}
+  .hero-copy{width:100%;transform:none} .hero h1{font-size:clamp(57px,15vw,90px)} .hero-arrow{right:24px;bottom:9vh;width:60px;height:60px}
+  .section-heading{display:block} .section-heading p{margin-top:22px}
+  .course-stage{height:440px} .course-card{width:260px;height:390px}
+  .school-copy{width:100%}
+  .why-grid,.about-grid,.footer-grid{grid-template-columns:1fr;gap:50px}
+  .work-carousel{height:430px} .work-card{width:230px;height:320px}
+  .people{max-width:560px} .person{height:380px}
+  .form{grid-template-columns:1fr} .field.full{grid-column:auto}
+  .review-card{width:min(88vw,470px)}
+}
+@media(max-width:520px){
+  .brand span{font-size:23px} .brand svg{width:27px}
+  .hero-lead{font-size:17px} .hero-desc{font-size:13px}
+  .section-heading h2,.school-copy h2,.why-copy h2,.about-copy h2,.apply h2{font-size:52px}
+  .course-stage{height:410px} .course-card{width:230px;height:360px;padding:22px} .course-card h3{font-size:36px}
+  .people{grid-template-columns:1fr 1fr;gap:10px} .person{height:300px}
+  .review-card{padding:27px;min-height:275px} .review-text{font-size:25px}
+  .ref-row{flex-direction:column} .footer-grid{gap:55px}
 }
 
-@media(max-width:767.98px){
 
-  /* The header sits above the menu overlay (z-55) so the close button stays visible. */
-  .premium-header-nav{z-index:60}
-  .premium-hamburger{width:44px;height:44px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(8,4,10,.44));border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.30),0 12px 28px -14px rgba(0,0,0,.85)}
-  .premium-hamburger-line{width:16px}
+/* Clean typography: no separate text panels. The site keeps one continuous background. */
+.section-heading p,.school-copy p,.why-copy p,.about-copy p,.apply-sub,.ref-copy,.social-copy{
+  display:block;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+  padding:0;
+}
+.section-heading p { max-width: 470px; }
+.why-copy p { max-width: 520px; }
+.about-copy p { max-width: 760px; }
+.apply-sub { max-width: 760px; }
+.ref-copy, .social-copy { max-width: 480px; }
+.apply h2 { color: #fff !important; }
 
-  .premium-mobile-menu{z-index:55;background:rgba(6,3,8,.92);align-items:center;padding:calc(96px + env(safe-area-inset-top)) 28px calc(40px + env(safe-area-inset-bottom))}
-  .premium-mobile-menu-list{width:100%;max-width:340px;gap:0;align-items:stretch}
-  .premium-mobile-menu-list li{width:100%}
-  .premium-mobile-menu-list li+li{border-top:1px solid rgba(255,255,255,.10)}
-  .premium-mobile-menu-link{display:block;width:100%;text-align:center;font-size:clamp(27px,8vw,36px);padding:17px 12px;color:rgba(255,255,255,.93)}
-  .premium-mobile-menu-link:active{color:var(--accent)}
-
-  /* Hero: a darker glass panel keeps the text readable and the CTA circle on screen. */
-  .premium-botanical-card{left:20px;right:20px;width:auto;bottom:calc(58px + env(safe-area-inset-bottom));padding:26px 22px;background:linear-gradient(180deg,rgba(14,8,16,.50),rgba(6,3,8,.72));border-color:rgba(255,255,255,.14);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
-  .premium-action-circle{width:58px;height:58px;right:14px;bottom:-26px}
-
-  /* Features: compact, darker cards so all three fit a phone screen and stay readable. */
-  .premium-features-container{left:20px;right:20px;width:auto;gap:12px;max-height:none;overflow:visible}
-  .premium-feature-card{min-height:0;padding:18px 20px;background:linear-gradient(180deg,rgba(14,8,16,.56),rgba(6,3,8,.74));border-color:rgba(255,255,255,.14);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 18px 40px -20px rgba(0,0,0,.9)}
-  .premium-feature-icon-wrapper{margin-bottom:12px}
-  .premium-feature-title{font-size:20px;margin:0 0 6px 0}
-  .premium-feature-desc{font-size:13px;line-height:18px}
-
-  /* Mission text: smaller type and tighter gutters keep a comfortable line length. */
-  .mission-container{padding:0 22px}
-  .mission-para{font-size:clamp(22px,6.6vw,28px);line-height:1.28}
-  .mission-pill{padding:1px 12px;margin:0 4px}
-
-  .feedback-container{padding:0 20px}
-  .fb-input{font-size:16px}  /* under 16px, iOS zooms the page on focus */
+/* Softer, more fluid scroll-driven background motion. */
+.bg-wrapper {
+  transition: transform .8s cubic-bezier(.16,1,.3,1);
+  will-change: transform;
 }
 
-/* Short portrait phones (320x568 and similar): three stacked cards measure
-   639px against a 568px viewport. Scoped to portrait and to short viewports so
-   it cannot affect 360px+ portrait or the landscape rule below. */
-@media(max-width:767.98px) and (max-height:620px) and (orientation:portrait){
-  .premium-features-container{gap:8px}
-  .premium-feature-card{padding:12px 14px}
-  .premium-feature-icon-wrapper{margin-bottom:8px}
-  .premium-feature-icon-wrapper svg{width:28px;height:28px}
-  .premium-feature-title{font-size:17px;margin:0 0 4px 0}
-  .premium-feature-desc{font-size:12px;line-height:16px}
+/* final visual tuning */
+.course-card{border-radius:2px;background:linear-gradient(145deg,rgba(24,18,28,.58),rgba(5,4,8,.34));box-shadow:0 40px 100px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18)}
+.course-card h3,.section-heading h2,.school-copy h2,.why-copy h2,.about-copy h2,.apply h2,.ref-title,.social-title{font-weight:700;text-shadow:0 7px 30px rgba(0,0,0,.95),0 2px 5px rgba(0,0,0,.8)}
+.why-copy p,.school-copy p,.about-copy p,.apply-sub,.section-heading p{color:rgba(255,255,255,.88);text-shadow:0 4px 18px rgba(0,0,0,.98)}
+.form-card{border-radius:6px;background:rgba(8,6,10,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 24px 70px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.12)}
+.review-card{border-radius:2px;background:linear-gradient(145deg,rgba(26,20,31,.64),rgba(4,3,7,.36));box-shadow:0 42px 110px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.18)}
+@media(max-width:900px){.course-stage{height:440px}.course-card{width:250px;height:380px}.work-card{width:220px;height:310px}.form-card{padding:24px;width:min(92vw,500px)}.review-card{width:min(78vw,430px)}}
+
+/* Text contrast: softer white with a fine black keyline so it remains readable over moving video. */
+.hero h1,.hero-lead,.hero-desc,.section-heading h2,.section-heading p,.school-copy h2,.school-copy p,.why-copy h2,.why-copy p,.why-copy strong,.about-copy h2,.about-copy p,.about-copy .signature,.apply h2,.apply-sub,.ref-title,.ref-copy,.social-title,.social-copy,.review-text,.review-name,.course-card h3,.course-card p{
+  -webkit-text-stroke:.28px rgba(0,0,0,.78);
+  paint-order:stroke fill;
 }
 
-/* Landscape phones: not enough height for three stacked cards. */
-@media(max-width:900px) and (max-height:520px){
-  .premium-features-container{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-  .premium-feature-card{padding:14px}
-  .premium-feature-icon-wrapper{margin-bottom:8px}
-  .premium-feature-title{font-size:17px}
-  .premium-feature-desc{font-size:12px;line-height:16px}
-  .premium-botanical-card{bottom:20px;padding:18px 20px;width:min(60vw,420px);right:auto}
-  .mission-para{font-size:clamp(19px,3.6vw,26px)}
+.hero h1,.hero-lead,.hero-desc,.section-heading h2,.section-heading p,.school-copy h2,.school-copy p,.school-copy .accent-line,
+.why-copy h2,.why-copy p,.why-copy strong,.about-copy h2,.about-copy p,.about-copy .signature,.apply h2,.apply-sub,
+.ref-title,.ref-copy,.social-title,.social-copy,.ad p,.course-card h3,.course-card p,.course-cta,.review-text,.review-name,
+.brand span,.nav a,.carousel-hint,.eyebrow,.course-number,.field label,.field input,.field textarea,.field select,.stars{
+  -webkit-text-stroke: .32px rgba(0,0,0,.72);
+}
+.hero-lead,.hero-desc,.section-heading p,.school-copy p,.why-copy p,.about-copy p,.apply-sub,.ref-copy,.social-copy,.review-name,.course-card p,.ad p{
+  color:rgba(255,255,255,.70) !important;
+}
+.hero h1,.section-heading h2,.school-copy h2,.why-copy h2,.about-copy h2,.apply h2,.ref-title,.social-title,.course-card h3,.review-text{
+  color:rgba(250,247,251,.88) !important;
+}
+.course-stage.is-dragging .course-card{transition:none !important}
+.review-stage.is-dragging .review-card{transition:none !important}
+/* Bodoni Moda / premium typography */
+body, input, button, textarea, select { font-family: var(--sans); }
+.nav a, .eyebrow, .course-number, .course-cta, .carousel-hint, .field label, .social-links a, .ad small { font-family: var(--sans); font-weight: 600; -webkit-text-stroke:0; text-shadow:none; }
+.hero-lead, .hero-desc, .school-copy p, .why-copy p, .about-copy p, .apply-sub, .section-heading p, .review-name, .ref-copy, .social-copy, .field input, .ref-row input { font-family: var(--sans); }
+.social-links a{display:inline-flex;align-items:center;gap:10px;padding:11px 16px;}
+.social-icon{width:15px;height:15px;display:inline-block;position:relative;flex:0 0 15px;}
+.instagram-icon{border:1.5px solid currentColor;border-radius:4px;}
+.instagram-icon::before{content:"";position:absolute;width:5px;height:5px;border:1.4px solid currentColor;border-radius:50%;left:3.5px;top:3.5px;}
+.instagram-icon::after{content:"";position:absolute;width:2px;height:2px;background:currentColor;border-radius:50%;right:2px;top:2px;}
+.telegram-icon{border:1.5px solid currentColor;border-radius:50%;}
+.telegram-icon::before{content:"";position:absolute;width:7px;height:5px;border-top:1.5px solid currentColor;transform:rotate(-25deg);left:3px;top:4px;}
+.telegram-icon::after{content:"";position:absolute;width:4px;height:1.5px;background:currentColor;transform:rotate(42deg);left:6px;top:8px;}
+.copyright{margin-top:28px;color:rgba(255,255,255,.42);font-family:var(--sans);font-size:11px;letter-spacing:.16em;text-transform:uppercase;}
+
+
+/* Latest text blocks: one continuous background, larger rounded typography */
+.school-copy .featured-copy,
+.why-copy .featured-copy{
+  font-family:var(--sans);
+  font-size:clamp(17px,1.25vw,20px);
+  line-height:1.75;
+  color:#fff;
+  -webkit-text-stroke:0 !important;
+  text-shadow:0 3px 16px rgba(0,0,0,.72);
+  background:rgba(8,6,12,.34);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  padding:28px 30px;
+  box-shadow:0 18px 55px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.06);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+.school-copy .featured-copy{margin:0;max-width:760px;}
+.why-copy .why-featured{margin:0;max-width:560px;}
+@media (max-width:700px){
+  .school-copy .featured-copy,
+  .why-copy .featured-copy{font-size:17px;line-height:1.65;padding:22px 22px;border-radius:20px;}
 }
 
 </style>
+<style>
+/* Finished AI work and founder portraits */
+.work-card{width:330px;height:272px;background:#100810;}
+.work-art{inset:0 0 52px;width:100%;height:220px;object-fit:contain;display:block;mix-blend-mode:normal;opacity:1;background:#100810;}
+.work-card::before{display:none;}
+.work-card .work-label{bottom:14px;font-size:23px;}
+.person::after{display:none;}
+.person img{object-fit:contain;object-position:center bottom;}
+@media(max-width:900px){.work-carousel{margin-right:0;}.work-card{width:288px;height:244px;}.work-art{height:192px;}.person{height:380px;}}
+@media(max-width:520px){.people{gap:10px;}.person{height:330px;}}
+</style>
+<style>
+/* Reduce paint cost without changing page layout. */
+.bg-wrapper{inset:0;width:100%;height:100%;transition:none;}
+.nav,.course-card,.work-card,.form-card,.review-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+.nav{background:rgba(10,6,14,.88);}
+.course-card,.review-card{background:rgba(20,12,25,.9);}
+.course-stage,.work-carousel,.review-stage{touch-action:pan-y;}
+.lite-mode .course-card,.lite-mode .work-card,.lite-mode .review-card{filter:none!important;box-shadow:0 12px 28px rgba(0,0,0,.32);transition:transform .35s ease,opacity .25s ease;}
+.lite-mode .work-card{will-change:auto;}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*,*::before,*::after{animation:none!important;transition:none!important;}}
+</style>
+
+<style>
+/* Unified reading panels, with no expensive backdrop blur. */
+#school .copy-panel,#why .copy-panel,#about .copy-panel,#apply .copy-panel{
+  background:linear-gradient(135deg,rgba(43,30,50,.35),rgba(28,24,34,.28))!important;
+  border:1px solid transparent!important;
+  box-shadow:none!important;
+  border-radius:24px;padding:clamp(22px,2.3vw,34px);
+  font-family:var(--sans);font-size:clamp(17px,1.32vw,19px);font-weight:500;
+  line-height:1.78;letter-spacing:.005em;color:#e6dfea!important;
+  -webkit-text-stroke:0!important;text-shadow:none!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+#about .copy-panel p{font:inherit;line-height:inherit;color:inherit!important;-webkit-text-stroke:0!important;text-shadow:none!important;margin:0 0 18px;max-width:none;}
+#about .copy-panel p:last-child{margin-bottom:0;}
+#apply .copy-panel{margin-bottom:32px;}
+#why .why-featured{margin-bottom:26px;}
+#why .why-copy strong{display:block;font-size:clamp(22px,2vw,28px);line-height:1.3;color:#d5b0f2;}
+.why-grid{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:clamp(42px,6vw,88px);}
+.work-carousel{height:540px;margin:0;touch-action:pan-y;cursor:grab;outline-offset:8px;}
+.work-carousel:active{cursor:grabbing;}
+.work-card{width:350px;height:430px;padding:22px;border-radius:4px;display:flex;flex-direction:column;justify-content:flex-start;background:linear-gradient(145deg,#201525,#100b15);border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 55px rgba(0,0,0,.36);}
+.work-number{font-size:11px;font-weight:600;letter-spacing:.14em;color:#cb8dff;margin-bottom:18px;}
+.work-art{position:static;inset:auto;width:100%;height:auto;aspect-ratio:3/2;object-fit:contain;border-radius:2px;display:block;flex-shrink:0;mix-blend-mode:normal;opacity:1;background:#100810;}
+.work-copy{padding-top:22px;}
+.work-copy h3{font-family:var(--sans);font-size:27px;font-weight:700;line-height:1.12;letter-spacing:-.025em;color:#f0e9f4;margin:0 0 12px;}
+.work-copy p{font-family:var(--sans);font-size:15px;line-height:1.6;color:#bdb0c6!important;margin:0;-webkit-text-stroke:0;text-shadow:none;}
+@media(max-width:1000px){.why-grid{grid-template-columns:1fr;gap:30px;}.why-copy{max-width:650px;margin:0 auto;}.work-carousel{height:490px;}.work-card{width:330px;height:415px;}}
+@media(max-width:520px){.work-card{width:280px;height:390px;padding:18px;}.work-carousel{height:450px;}.work-copy h3{font-size:25px;}.work-copy p{font-size:14px;}#school .copy-panel,#why .copy-panel,#about .copy-panel,#apply .copy-panel{font-size:17px;line-height:1.7;border-radius:20px;padding:22px;}}
+</style>
+<style>
+/* Static, in-flow AI results: text first, cards below. */
+#why .ai-results{display:flex;flex-direction:column;gap:44px;min-width:0;}
+#why .ai-results-intro{width:100%;max-width:800px;margin:0;}
+#why .ai-results-intro h2{margin-bottom:26px;}
+#why .ai-results-intro .why-featured{max-width:760px;margin:0;}
+#why .ai-results-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;align-items:stretch;min-width:0;}
+#why .ai-result-card{display:flex;flex-direction:column;min-width:0;margin:0;padding:12px;border:1px solid rgba(220,192,239,.08);border-radius:14px;background:linear-gradient(145deg,rgba(43,29,50,.35),rgba(23,18,29,.28));box-shadow:0 8px 22px rgba(0,0,0,.14);transition:transform .25s ease,background .25s ease,box-shadow .25s ease;}
+#why .ai-result-image{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:contain;border-radius:8px;}
+#why .ai-result-copy{padding:18px 3px 8px;}
+#why .ai-result-copy h3{font-family:var(--sans);font-size:clamp(14px,1.15vw,17px);font-weight:700;line-height:1.35;letter-spacing:.025em;color:#eee5f3;margin:0 0 12px;overflow-wrap:anywhere;}
+#why .ai-result-copy p{font-family:var(--sans);font-size:14px;line-height:1.65;color:#cfc3d6;margin:0;-webkit-text-stroke:0;text-shadow:0 1px 6px rgba(0,0,0,.5);}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){#why .ai-result-card:hover{transform:translateY(-5px);background:rgba(58,37,66,.42);box-shadow:0 14px 28px rgba(0,0,0,.2);}}
+@media(max-width:1150px){#why .ai-results-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}#why .ai-result-copy h3{font-size:16px;}}
+@media(max-width:800px){#why .ai-results-grid{grid-template-columns:repeat(2,minmax(0,1fr));}#why .ai-results{gap:36px;}}
+@media(max-width:520px){#why .ai-results-grid{grid-template-columns:minmax(0,1fr);gap:20px;}#why .ai-result-card{padding:14px;}#why .ai-result-copy{padding:18px 5px 8px;}#why .ai-result-copy h3{font-size:17px;}}
+</style>
+<style>
+/* One muted lavender material for cards, with a gently lit upper edge. */
+:root{--lavender-card:linear-gradient(145deg,rgba(139,116,164,.94),rgba(89,70,113,.95) 60%,rgba(68,52,89,.96));--lavender-shadow:inset 0 1px 0 rgba(244,229,255,.4),inset 0 -3px 0 rgba(39,24,56,.24),0 18px 38px rgba(13,6,23,.3),0 3px 7px rgba(8,4,14,.2);}
+.course-card,.review-card,.form-card,#why .ai-result-card{background:var(--lavender-card)!important;border:1px solid rgba(230,211,247,.23);border-radius:22px;box-shadow:var(--lavender-shadow)!important;}
+.course-card .course-number,.course-card .course-icon{color:#f0dcff;border-color:rgba(240,220,255,.65);}
+.course-card p{color:#ede5f3!important;}
+.review-card{height:340px;min-height:340px;display:flex;flex-direction:column;justify-content:space-between;}
+.review-card .review-text{font-size:clamp(20px,2vw,26px);line-height:1.35;}
+.review-card .review-name{color:#eee3f5!important;}
+#why .ai-results{gap:52px;}
+#why .ai-carousel{min-width:0;width:100%;}
+#why .ai-results-grid{position:relative;--card-width:400px;display:flex;align-items:center;gap:28px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:calc((100% - var(--card-width))/2);padding:36px max(0px,calc((100% - var(--card-width))/2)) 42px;perspective:1400px;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x pan-y;cursor:grab;}
+#why .ai-results-grid::-webkit-scrollbar{display:none;}
+#why .ai-results-grid.is-dragging{scroll-snap-type:none;scroll-behavior:auto;cursor:grabbing;user-select:none;}
+#why .ai-result-card{box-sizing:border-box;flex:0 0 var(--card-width);width:var(--card-width);height:470px;min-height:470px;margin:0;padding:20px;scroll-snap-align:center;scroll-snap-stop:normal;transform:perspective(1200px) translateZ(calc(var(--depth,0)*-36px)) translateY(calc(var(--depth,0)*9px)) scale(calc(1 - var(--depth,0)*.055));transition:transform .22s ease;}
+#why .ai-result-card:hover{background:var(--lavender-card);box-shadow:var(--lavender-shadow);transform:perspective(1200px) translateZ(calc(var(--depth,0)*-36px)) translateY(calc(var(--depth,0)*9px - 3px)) scale(calc(1 - var(--depth,0)*.055));}
+#why .ai-result-image{width:100%;height:240px;aspect-ratio:auto;object-fit:contain;background:rgba(25,15,34,.2);border-radius:13px;pointer-events:none;}
+#why .ai-result-copy{padding:26px 4px 0;}
+#why .ai-result-copy h3{font-size:21px;line-height:1.3;color:#fff4ff;}
+#why .ai-result-copy p{font-size:16px;line-height:1.65;color:#f0e5f5;text-shadow:none;}
+.ai-carousel-controls{display:flex;justify-content:center;align-items:center;gap:24px;color:#d5bfdc;font-size:13px;letter-spacing:.1em;}
+.ai-carousel-controls button{width:48px;height:48px;border-radius:50%;border:1px solid rgba(219,194,239,.35);background:rgba(119,91,146,.3);color:#f2e6fa;font-size:24px;cursor:pointer;transition:background .2s;}
+.ai-carousel-controls button:hover{background:rgba(154,124,183,.5);}
+.ai-carousel-controls button:disabled{opacity:.35;cursor:default;}
+.ai-results-grid:focus-visible,.ai-carousel-controls button:focus-visible{outline:2px solid #e1bfff;outline-offset:4px;}
+/* The founders occupy one continuous lavender-lit environment. */
+#about{background:radial-gradient(ellipse at 22% 53%,rgba(165,137,193,.51),transparent 68%),radial-gradient(ellipse at 79% 52%,rgba(112,84,143,.29),transparent 73%),linear-gradient(180deg,transparent,rgba(84,62,107,.23) 30%,rgba(84,62,107,.23) 73%,transparent);}
+#about .about-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:clamp(40px,6vw,88px);}
+#about .founders-portraits{min-width:0;}
+#about .founders-label{font-size:11px;letter-spacing:.24em;color:#e3cfee;margin-bottom:24px;}
+#about .founders-label span{display:block;font-size:24px;font-weight:600;letter-spacing:.06em;margin-top:10px;}
+#about .people{display:flex;gap:0;width:100%;max-width:none;height:620px;align-items:flex-end;}
+#about .person{flex:0 0 54%;width:54%;height:100%;border:0;background:none;box-shadow:none;overflow:visible;display:flex;justify-content:center;}
+#about .person:first-child{margin-right:-8%;}
+#about .person:nth-child(2){height:94%;}
+#about .person img{height:100%;width:auto;max-width:none;object-fit:contain;object-position:center bottom;filter:drop-shadow(1px 0 0 rgba(242,227,255,.6)) drop-shadow(-1px 0 0 rgba(242,227,255,.4)) drop-shadow(0 15px 18px rgba(24,12,38,.28));}
+#about .founders-story{background:none!important;border:0!important;box-shadow:none!important;padding:0;}
+#about .founders-story p{font-family:var(--sans);font-size:clamp(17px,1.32vw,19px);font-weight:500;line-height:1.78;letter-spacing:.005em;color:#eee5f3!important;-webkit-text-stroke:0;text-shadow:0 2px 12px rgba(15,6,24,.65);}
+@media(max-width:1000px){#about .about-grid{grid-template-columns:1fr;}#about .founders-portraits{width:min(560px,100%);margin:auto;}#about .about-copy{max-width:760px;}#why .ai-results-grid{--card-width:350px;}#why .ai-result-card{height:450px;min-height:450px;}#why .ai-result-image{height:215px;}}
+@media(max-width:600px){#why .ai-results{gap:36px;}#why .ai-results-grid{--card-width:min(300px,calc(100vw - 72px));gap:16px;padding-top:26px;padding-bottom:32px;}#why .ai-result-card{height:420px;min-height:420px;padding:16px;}#why .ai-result-image{height:190px;}#why .ai-result-copy{padding-top:22px;}#why .ai-result-copy h3{font-size:18px;}#why .ai-result-copy p{font-size:15px;}#about .people{height:470px;}#about .founders-label span{font-size:21px;}.review-card{height:340px;min-height:340px;}}
+@media(prefers-reduced-motion:reduce){#why .ai-result-card{transform:none!important;}}
+</style>
+<style>
+/* New learning catalogue: translucent light lavender, sized by group. */
+#courses{display:block;}
+.learning-content{display:flex;flex-direction:column;gap:42px;min-width:0;}
+.learning-heading h2{font-size:clamp(38px,5vw,68px);line-height:1.08;letter-spacing:-.035em;margin:0;}
+.learning-heading .eyebrow,.directions-heading .eyebrow,.addons-heading .eyebrow{margin-bottom:16px;}
+.main-programs,.addon-programs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;}
+#courses .program-glass{box-sizing:border-box;display:flex;flex-direction:column;min-width:0;padding:32px;background:linear-gradient(140deg,rgba(205,184,229,.28),rgba(155,130,185,.19) 60%,rgba(125,102,155,.23));border:1px solid rgba(240,224,255,.35);border-radius:28px;box-shadow:inset 0 1px 1px rgba(255,243,255,.38),inset 0 -1px 0 rgba(206,178,233,.12),0 18px 40px rgba(11,5,20,.22);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);}
+#courses .main-program{height:810px;}
+#courses .maxi-program{border-color:rgba(234,208,255,.65);background:linear-gradient(135deg,rgba(219,194,244,.36),rgba(169,141,203,.24));box-shadow:inset 0 1px 1px rgba(255,242,255,.5),0 20px 44px rgba(18,8,31,.26);}
+.program-tier{font-size:11px;line-height:1.5;letter-spacing:.13em;font-weight:700;color:#e9d5fb;margin-bottom:18px;}
+#courses h3,#courses h4{margin:0 0 18px;font-size:clamp(24px,2.5vw,34px);line-height:1.15;letter-spacing:-.025em;color:#faf0ff;overflow-wrap:anywhere;}
+#courses .program-price{font-size:clamp(32px,3.2vw,44px);font-weight:700;line-height:1.15;letter-spacing:-.035em;color:#f6e9ff;margin-bottom:22px;white-space:nowrap;}
+#courses .program-subtitle{font-size:18px;line-height:1.5;color:#eee4f4;margin-bottom:22px;min-height:54px;}
+#courses .maxi-intro{font-size:15px;line-height:1.6;color:#e2d5ed;margin-bottom:22px;}
+.topics-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#dfcbe9;margin-bottom:14px;}
+.program-topics{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;align-content:start;}
+.program-topics li{position:relative;padding-left:13px;font-size:14px;line-height:1.45;color:#eee4f5;overflow-wrap:anywhere;}
+.program-topics li::before{content:'·';position:absolute;left:0;color:#e4c9fa;font-weight:700;}
+#courses .program-result{font-size:15px;line-height:1.65;color:#f1e2fb;margin:24px 0 18px;}
+.program-cta{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:auto;padding:16px 0 0;border-top:1px solid rgba(233,211,249,.2);color:#f8edff;text-decoration:none;font-size:13px;}
+.program-cta span{font-size:22px;}
+.directions-heading,.addons-heading{padding-top:24px;}
+#courses .directions-heading h3,#courses .addons-heading h3{margin:0;font-size:clamp(30px,4vw,48px);}
+.addons-heading p{color:#d9c9e4;margin:16px 0 0;}
+.directions-carousel{min-width:0;}
+.directions-rail{--direction-width:490px;position:relative;display:flex;gap:28px;align-items:center;overflow-x:auto;overflow-y:hidden;padding:30px max(0px,calc((100% - var(--direction-width))/2)) 40px;scroll-snap-type:x mandatory;scroll-padding-inline:calc((100% - var(--direction-width))/2);overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x pan-y;cursor:grab;}
+.directions-rail::-webkit-scrollbar{display:none;}
+.directions-rail.is-dragging{scroll-snap-type:none;cursor:grabbing;user-select:none;}
+#courses .direction-card{flex:0 0 var(--direction-width);width:var(--direction-width);height:740px;min-height:740px;scroll-snap-align:center;transform:perspective(1400px) translateZ(calc(var(--distance,0)*-36px)) translateY(calc(var(--distance,0)*8px)) scale(calc(1 - var(--distance,0)*.05));transition:transform .2s ease;}
+#courses .direction-card h4{font-size:28px;min-height:66px;}
+#courses .addon-card{height:550px;}
+.directions-controls{display:flex;justify-content:center;align-items:center;gap:24px;color:#e0c9ef;font-size:13px;letter-spacing:.1em;}
+.directions-controls button{width:48px;height:48px;border:1px solid rgba(231,205,250,.4);border-radius:50%;background:rgba(187,157,212,.2);color:#f4e4ff;font-size:24px;cursor:pointer;}
+.directions-controls button:disabled{opacity:.3;cursor:default;}
+.directions-controls button:hover:not(:disabled){background:rgba(187,157,212,.35);}
+.directions-rail:focus-visible,.directions-controls button:focus-visible,.program-cta:focus-visible{outline:2px solid #e8caff;outline-offset:5px;}
+#about{background:radial-gradient(ellipse at 24% 50%,rgba(195,168,219,.55),transparent 69%),radial-gradient(ellipse at 76% 52%,rgba(147,116,178,.32),transparent 74%),linear-gradient(180deg,transparent,rgba(134,104,163,.2) 30%,rgba(134,104,163,.2) 72%,transparent);}
+@media(max-width:1100px){.main-programs,.addon-programs{gap:20px;}#courses .program-glass{padding:26px;}#courses .main-program{height:900px;}.main-program .program-topics{grid-template-columns:1fr;gap:7px;}}
+@media(max-width:760px){.main-programs,.addon-programs{grid-template-columns:1fr;}#courses .main-program{height:940px;}.main-program .program-topics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px;}.directions-rail{--direction-width:min(380px,calc(100vw - 72px));gap:20px;}#courses .direction-card{height:900px;min-height:900px;}.direction-card .program-topics{grid-template-columns:1fr;gap:8px;}#courses .direction-card h4{font-size:25px;}.learning-content{gap:32px;}}
+@media(max-width:430px){#courses .main-program{height:1160px;}.main-program .program-topics{grid-template-columns:1fr;gap:8px;}#courses .program-glass{padding:22px;}#courses .addon-card{height:740px;}.addon-card .program-topics{grid-template-columns:1fr;}#courses .direction-card{height:950px;min-height:950px;}.program-tier{font-size:10px;}}
+@media(prefers-reduced-motion:reduce){#courses .direction-card{transform:none!important;}}
+</style>
+<style>
+/* Master material: shared by every card, irrespective of section or tier. */
+:root{--glass-surface:linear-gradient(140deg,rgba(218,198,238,.32),rgba(181,155,208,.23) 62%,rgba(156,131,185,.27));--glass-border:1px solid rgba(242,224,255,.35);--glass-shadow:inset 0 1px 1px rgba(255,244,255,.37),inset 0 -1px 0 rgba(226,199,247,.13),0 14px 32px rgba(14,6,25,.23);--glass-radius:26px;}
+#courses .program-glass,#courses .maxi-program,#why .ai-result-card,#why .ai-result-card:hover,.review-card,.form-card{background:var(--glass-surface)!important;border:var(--glass-border)!important;border-radius:var(--glass-radius)!important;box-shadow:var(--glass-shadow)!important;backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important;}
+@media(prefers-reduced-motion:reduce){#courses .program-glass,#why .ai-result-card,.review-card,.form-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}}
+#courses .learning-content{gap:36px;max-width:1180px;min-width:0;}
+#courses .main-programs{width:100%;max-width:1100px;gap:28px;margin-inline:auto;align-items:stretch;}
+#courses .addon-programs{width:100%;max-width:720px;gap:24px;margin-inline:auto;align-items:stretch;}
+#courses .program-glass{height:auto;min-height:0;padding:26px;}
+.program-inner{min-width:0;width:100%;display:flex;flex-direction:column;}
+#courses .main-program{min-height:var(--main-height,0px);}
+#courses .main-program .program-inner{min-height:580px;}
+#courses .direction-card{width:var(--direction-width);flex-basis:var(--direction-width);height:auto;min-height:var(--direction-height,0px);}
+#courses .direction-card .program-inner{min-height:350px;}
+#courses .addon-card{min-height:var(--addon-height,0px);}
+#courses .addon-card .program-inner{min-height:240px;}
+#courses h3,#courses h4{font-size:clamp(23px,2.3vw,31px);line-height:1.18;margin-bottom:16px;}
+#courses .direction-card h4{font-size:clamp(21px,2vw,26px);min-height:62px;}
+#courses .addon-card h4{font-size:23px;}
+#courses .program-price{font-size:clamp(30px,3vw,40px);margin-bottom:18px;}
+#courses .direction-card .program-price{font-size:33px;}
+#courses .addon-card .program-price{font-size:28px;}
+#courses .program-subtitle{font-size:clamp(16px,1.5vw,18px);min-height:50px;margin-bottom:18px;}
+#courses .maxi-intro{font-size:14px;line-height:1.6;margin-bottom:18px;}
+#courses .program-result{font-size:14px;line-height:1.6;margin:20px 0;}
+.program-tier{font-size:10px;letter-spacing:.11em;margin-bottom:14px;}
+.program-disclosure{margin:0 0 20px;min-width:0;}
+.program-disclosure summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none;padding:12px 0;border-top:1px solid rgba(230,211,247,.2);border-bottom:1px solid rgba(230,211,247,.2);font-size:14px;color:#f1e3fc;}
+.program-disclosure summary::-webkit-details-marker{display:none;}
+.program-disclosure summary span{font-size:11px;color:#dfcfea;margin-left:auto;}
+.program-disclosure summary::after{content:'+';font-size:20px;line-height:1;}
+.program-disclosure[open] summary::after{content:'−';}
+#courses .program-topics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 14px;margin-top:16px;}
+#courses .program-topics li{font-size:14px;line-height:1.5;}
+#courses .direction-card .program-topics,#courses .addon-card .program-topics{grid-template-columns:1fr;}
+#courses .main-programs .program-cta{margin-top:auto;}
+#courses .program-cta{padding-top:14px;margin-top:16px;}
+#courses .main-program .program-inner>.program-cta{margin-top:auto;}
+.directions-rail{--direction-width:380px;gap:24px;align-items:stretch;max-width:100%;padding-top:28px;padding-bottom:34px;overflow-anchor:none;}
+#courses .direction-card .program-disclosure[open] .program-topics{max-height:225px;overflow-y:auto;overscroll-behavior-y:contain;padding-right:7px;scrollbar-width:thin;scrollbar-color:rgba(226,199,244,.5) transparent;}
+#courses .addon-card .program-disclosure[open] .program-topics{max-height:165px;overflow-y:auto;scrollbar-width:thin;}
+#courses .direction-card .program-inner>.program-cta,#courses .addon-card .program-inner>.program-cta{margin-top:auto;}
+.program-disclosure summary:focus-visible{outline:2px solid #ead0ff;outline-offset:4px;border-radius:6px;}
+#courses .directions-heading,#courses .addons-heading{padding-top:18px;}
+#courses .directions-heading h3,#courses .addons-heading h3{font-size:clamp(27px,3.5vw,44px);}
+#why .ai-result-card{min-width:0;}
+/* Tablet: 768–1023px. */
+@media(min-width:768px) and (max-width:1023px){#courses{padding-inline:5vw;}#courses .program-glass{padding:22px;}#courses .main-programs{gap:22px;}#courses .main-program .program-inner{min-height:400px;}#courses .direction-card .program-inner{min-height:320px;}#courses .addon-card .program-inner{min-height:220px;}#courses .program-price{font-size:34px;}#courses h3{font-size:25px;}#courses .program-subtitle{font-size:16px;}.directions-rail{--direction-width:330px;gap:20px;}#courses .learning-content{gap:30px;}}
+/* Mobile: <=767px. Main 90vw; directions 80vw; add-ons 84vw. */
+@media(max-width:767px){
+ #courses{padding:80px 0 60px;}
+ #courses .learning-content{gap:26px;max-width:100%;}
+ #courses .learning-heading,#courses .directions-heading,#courses .addons-heading{width:90vw;margin-inline:auto;}
+ #courses .learning-heading h2{font-size:clamp(32px,8vw,44px);}
+ #courses .main-programs{display:grid;grid-template-columns:minmax(0,1fr);width:90vw;gap:18px;}
+ #courses .addon-programs{display:grid;grid-template-columns:minmax(0,1fr);width:84vw;gap:16px;}
+ #courses .program-glass{padding:20px;}
+ #courses .main-program{height:auto;}
+ #courses .main-program .program-inner{min-height:0;}
+ #courses .direction-card .program-inner{min-height:285px;}
+ #courses .addon-card .program-inner{min-height:210px;}
+ #courses h3,#courses h4{font-size:clamp(23px,5.6vw,28px);margin-bottom:14px;}
+ #courses .program-price{font-size:clamp(30px,8vw,36px);margin-bottom:16px;}
+ #courses .direction-card .program-price{font-size:30px;}
+ #courses .addon-card .program-price{font-size:27px;}
+ #courses .program-subtitle{font-size:16px;min-height:0;line-height:1.5;}
+ #courses .maxi-intro,#courses .program-result{font-size:14px;}
+ #courses .program-result{margin:16px 0;}
+ #courses .program-topics{grid-template-columns:1fr;gap:8px;}
+ #courses .program-topics li{font-size:14px;line-height:1.55;}
+ #courses .direction-card h4{font-size:22px;min-height:52px;}
+ .directions-carousel{width:100%;min-width:0;}
+ .directions-rail{--direction-width:80vw;gap:4vw;padding-top:22px;padding-bottom:28px;}
+ #courses .direction-card .program-disclosure[open] .program-topics,#courses .addon-card .program-disclosure[open] .program-topics{max-height:none;overflow:visible;}
+ #courses .directions-heading h3,#courses .addons-heading h3{font-size:clamp(27px,6.5vw,34px);}
+ .directions-controls{gap:22px;}.directions-controls button{width:44px;height:44px;}
+ #why .ai-results-grid{--card-width:80vw;gap:4vw;}
+ #why .ai-result-card{height:405px;min-height:405px;padding:18px;}
+ #why .ai-result-image{height:180px;}
+ #why .ai-result-copy h3{font-size:18px;}#why .ai-result-copy p{font-size:14px;}
+ .form-card{width:100%;max-width:90vw;padding:22px;}
+ .review-card{width:84vw;height:350px;min-height:350px;padding:24px;}
+ .review-card .review-text{font-size:clamp(20px,5vw,24px);}
+}
+@media(max-width:374px){#courses .program-glass{padding:18px;}#courses .program-price{font-size:30px;}#courses .direction-card h4{font-size:20px;}#why .ai-result-card{height:415px;min-height:415px;}#why .ai-result-image{height:165px;}}
+</style>
+<style>
+.bg-wrapper{inset:-5%;width:110%;height:110%;transition:transform .5s cubic-bezier(.15,.85,.35,1);}
+@media(hover:none),(prefers-reduced-motion:reduce){.bg-wrapper{inset:0;width:100%;height:100%;transform:none!important;transition:none;}}
+</style>
+<style id="refine">
+/* ===== Refinement: Fredoka, calmer type scale, one card size (MINI / MAXI slightly larger), no founders' glow ===== */
+:root{--card-w:360px;--card-h:520px;--main-w:432px}
+@media(max-width:1023px){:root{--card-w:330px;--card-h:500px;--main-w:372px}}
+@media(max-width:767px){:root{--card-w:min(80vw,340px);--card-h:480px}}
+
+/* Fredoka is rounded and wide: it needs normal tracking and more line height than the old tight headings. */
+body{font-size:15px}
+.brand span{font-size:24px;letter-spacing:.02em}
+.eyebrow{font-size:11px;letter-spacing:.16em;margin-bottom:16px}
+.hero h1{font-size:clamp(34px,5vw,72px);line-height:1.08;letter-spacing:-.01em;font-weight:600;margin-bottom:24px}
+.hero h1 em{font-style:normal;color:#e6c9ff}
+.hero-lead{font-size:clamp(16px,1.45vw,20px);line-height:1.5;font-weight:400}
+.hero-arrow{width:64px;height:64px}
+.section-heading h2,#courses .learning-heading h2,.school-block h2,.why-copy h2,#why .ai-results-intro h2,.about-copy h2,.apply h2{font-size:clamp(26px,3.3vw,44px);line-height:1.12;letter-spacing:-.01em;font-weight:600}
+#courses .directions-heading h3,#courses .addons-heading h3{font-size:clamp(22px,2.5vw,32px);line-height:1.15;letter-spacing:-.01em;font-weight:600}
+.ref-title,.social-title{font-size:clamp(26px,3vw,40px);line-height:1.12;letter-spacing:-.01em;font-weight:600}
+.section-heading p,.ref-copy,.social-copy,.apply-sub,.addons-heading p{font-size:14.5px;line-height:1.65}
+.review-text{font-size:clamp(16px,1.35vw,19px)}
+
+/* Reading panels */
+#school .copy-panel,#why .copy-panel,#about .copy-panel,#apply .copy-panel{font-size:clamp(15px,1.08vw,16.5px);line-height:1.7;font-weight:400}
+#about .founders-story p{font-size:clamp(15px,1.08vw,16.5px);line-height:1.7;font-weight:400}
+#why .why-copy strong{font-size:clamp(17px,1.5vw,21px)}
+
+/* Cards: one size for everything except the two main programs */
+#courses h3,#courses h4{font-size:clamp(19px,1.7vw,24px);line-height:1.2;letter-spacing:-.005em;font-weight:600;margin-bottom:12px}
+#courses .main-program h3{font-size:clamp(21px,1.9vw,27px)}
+#courses .direction-card h4{font-size:clamp(17px,1.45vw,20px);min-height:50px}
+#courses .addon-card h4{font-size:clamp(17px,1.45vw,20px)}
+#courses .program-price,#courses .direction-card .program-price,#courses .addon-card .program-price{font-size:clamp(23px,2vw,28px);margin-bottom:14px;letter-spacing:-.01em;font-weight:600}
+#courses .main-program .program-price{font-size:clamp(26px,2.3vw,32px)}
+#courses .program-subtitle{font-size:clamp(14px,1.2vw,16px);min-height:0;margin-bottom:16px}
+#courses .maxi-intro,#courses .program-result,#courses .program-topics li{font-size:13.5px;line-height:1.55}
+.program-tier{font-size:10px;letter-spacing:.1em}
+
+/* main programs: two equal cards, a little larger than the rest */
+#courses .main-programs{grid-template-columns:repeat(2,minmax(0,var(--main-w)));justify-content:center;max-width:none}
+#courses .main-program .program-inner{min-height:0}
+@media(max-width:767px){#courses .main-programs{grid-template-columns:minmax(0,1fr);width:90vw;margin-inline:auto}}
+
+/* directions and add-ons: identical size, the topic list scrolls inside the card instead of stretching it */
+.directions-rail{--direction-width:var(--card-w)}
+#courses .direction-card,#courses .addon-card{width:var(--card-w);flex:0 0 var(--card-w);height:var(--card-h);min-height:var(--card-h)}
+#courses .direction-card .program-inner,#courses .addon-card .program-inner{flex:1 1 auto;min-height:0}
+#courses .direction-card .program-disclosure[open] .program-topics,#courses .addon-card .program-disclosure[open] .program-topics{max-height:calc(var(--card-h) - 330px);overflow-y:auto;overscroll-behavior-y:contain}
+#courses .addon-card h4{min-height:50px}
+#courses .addon-programs{grid-template-columns:repeat(2,minmax(0,var(--card-w)));justify-content:center;max-width:none;width:100%}
+@media(max-width:767px){#courses .addon-programs{grid-template-columns:minmax(0,var(--card-w));width:100%}}
+
+/* AI results and reviews use the same card size */
+#why .ai-results-grid{--card-width:var(--card-w)}
+#why .ai-result-card{height:var(--card-h);min-height:var(--card-h);padding:18px}
+#why .ai-result-image{flex:1 1 auto;height:auto;min-height:0}
+#why .ai-result-copy{flex:none;padding:20px 4px 0}
+#why .ai-result-copy h3{font-size:clamp(16px,1.35vw,18px);margin-bottom:8px;letter-spacing:.02em}
+#why .ai-result-copy p{font-size:14px;line-height:1.55}
+.review-stage{height:calc(var(--card-h) + 70px)}
+.review-card{width:var(--card-w);height:var(--card-h);min-height:var(--card-h);justify-content:center;gap:22px}
+.review-card .review-text{font-size:clamp(16px,1.35vw,19px);line-height:1.5;margin-bottom:0}
+.stars{margin-bottom:0}
+
+/* The block "AI меняет не технологии…" between the main programs and the directions */
+.school-block{display:flex;flex-direction:column;gap:24px;padding-top:12px;scroll-margin-top:80px}
+.school-head{display:flex;flex-direction:column;gap:18px;max-width:760px}
+.school-block h2{margin:0}
+.school-lead,.school-close{max-width:760px;margin:0}
+.school-cards{display:grid;grid-template-columns:repeat(3,minmax(0,var(--card-w)));justify-content:center;gap:28px}
+#courses .info-card{min-height:190px}
+#courses .info-card .program-inner{min-height:0;justify-content:flex-end;flex:1 1 auto}
+.info-from{margin:0 0 8px;font-size:14px;line-height:1.5;color:#e6d9f0}
+#courses .info-card h4{margin:0;font-size:clamp(20px,1.9vw,26px);line-height:1.2}
+.school-close strong{font-weight:600;color:#fff}
+@media(max-width:860px){.school-cards{grid-template-columns:minmax(0,var(--card-w))}}
+
+/* About us: the founders' photos and the purple glow are gone, the story stays as one calm column */
+#about,#about.about{background:none!important}
+#about .about-grid{grid-template-columns:minmax(0,1fr)}
+#about .about-copy{max-width:760px}
+.about{min-height:0}
+
+/* Footer */
+.ad p{font-size:20px}
+.form{gap:22px 36px}
+</style>
+<style>
+/* Shared type and translucent lavender surfaces. */
+:root{--readable-body:clamp(16px,1.2vw,18px);--section-title:clamp(30px,3.2vw,44px);--glass-surface:linear-gradient(135deg,rgba(221,202,239,.43),rgba(179,153,205,.32));}
+.hero h1,.section-heading h2,#courses .learning-heading h2,.school-block h2,#why .why-copy h2,#about .about-copy h2,.apply h2,#faq h2{font-size:var(--section-title);line-height:1.18;letter-spacing:-.015em;text-wrap:balance;}
+#courses .directions-heading h3,.ref-title,.social-title{font-size:var(--section-title);line-height:1.18;}
+#school .copy-panel,#why .copy-panel,#about .founders-story,#apply .copy-panel,.faq-item{background:var(--glass-surface)!important;border:1px solid rgba(237,218,251,.15)!important;border-radius:24px;box-shadow:0 8px 25px rgba(16,7,25,.12)!important;padding:clamp(22px,2.4vw,32px);}
+#school .copy-panel,#why .copy-panel,#apply .copy-panel,#about .founders-story p,.ref-copy,.social-copy{font-size:var(--readable-body)!important;line-height:1.75;color:#fff8ff!important;font-weight:400;-webkit-text-stroke:0;text-shadow:0 2px 8px rgba(16,7,24,.8)!important;}
+#about .about-grid{display:block;max-width:1000px;}
+#about .founders-story p{margin:0 0 20px;}#about .founders-story p:last-child{margin-bottom:0;}
+#about .founders-story{background:var(--glass-surface)!important;padding:clamp(24px,3vw,40px)!important;}
+#courses .program-glass,#why .ai-result-card,.review-card,.form-card{background:var(--glass-surface)!important;}
+#courses .program-inner,#courses .program-topics li,#courses .program-subtitle,#courses .maxi-intro,#courses .program-result,.program-disclosure summary,.program-disclosure summary span,#why .ai-result-copy p,.review-name{color:#fff8ff!important;-webkit-text-stroke:0!important;text-shadow:0 1px 6px rgba(18,8,26,.9)!important;}
+#courses .program-topics li,#courses .maxi-intro,#courses .program-result,#courses .program-subtitle,#why .ai-result-copy p{font-size:16px!important;line-height:1.65;}
+#courses h3,#courses h4,#why .ai-result-copy h3{font-size:clamp(20px,1.7vw,24px)!important;color:#fff8ff!important;text-shadow:0 2px 8px rgba(18,8,26,.85);}
+#courses .program-price{color:#fffaff!important;font-weight:600;text-shadow:0 2px 8px rgba(18,8,26,.8);}
+.section{scroll-margin-top:90px;}.program-glass,.ai-result-card,.faq-item,.founders-story{break-inside:avoid;}
+/* Reserved stages isolate all circular movement from surrounding text. */
+.directions-rail,#why .ai-results-grid,.review-stage{position:relative;display:block;overflow:hidden;margin:0;perspective:1400px;scroll-snap-type:none;padding:0;}
+.directions-rail{height:calc(var(--card-h) + 95px);touch-action:pan-y;cursor:grab;}
+#courses .direction-card{position:absolute;left:50%;top:50%;width:var(--card-w);height:var(--card-h);min-height:var(--card-h);margin:0;transition:transform .5s cubic-bezier(.22,.75,.25,1),opacity .35s ease;}
+#courses .direction-card .program-topics{max-height:calc(var(--card-h) - 320px)!important;overflow-y:auto!important;scrollbar-width:thin;}
+#why .ai-results{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;column-gap:clamp(40px,6vw,90px);}
+#why .ai-results-intro{grid-column:2;grid-row:1;max-width:100%;}
+#why .ai-carousel{grid-column:1;grid-row:1;min-width:0;}
+#why .ai-results-grid{height:calc(var(--card-h) + 125px);width:100%;touch-action:pan-x;cursor:grab;}
+#why .ai-result-card{position:absolute;left:50%;top:50%;width:min(var(--card-w),94%);height:var(--card-h);min-height:var(--card-h);transition:transform .5s cubic-bezier(.22,.75,.25,1),opacity .35s ease;}
+#why .ai-result-card:hover{transform:none;}
+#why .ai-result-image{height:290px;flex:none;width:100%;object-fit:contain;}
+#why .ai-result-copy{padding-top:20px;}
+.review-stage{height:calc(var(--card-h) + 90px);touch-action:pan-y;}
+.review-card{position:absolute;left:50%;top:50%;transition:transform .5s cubic-bezier(.22,.75,.25,1),opacity .35s ease;}
+.loop-dragging{cursor:grabbing!important;user-select:none;}.loop-dragging>*{transition:none!important;}
+.review-controls{display:flex;justify-content:center;align-items:center;gap:24px;color:#f1e3fc;}
+.review-controls button{width:46px;height:46px;border-radius:50%;border:1px solid rgba(237,213,255,.45);background:rgba(198,169,222,.3);color:white;font-size:24px;cursor:pointer;}
+#faq{min-height:auto;}.faq-inner{max-width:950px;}.faq-inner h2{margin-bottom:32px;}.faq-list{display:grid;gap:14px;}
+.faq-item{padding:0!important;}.faq-item summary{cursor:pointer;list-style:none;position:relative;padding:22px 56px 22px 24px;font-size:18px;line-height:1.5;color:#fff5ff;}
+.faq-item summary::-webkit-details-marker{display:none;}.faq-item summary::after{content:'+';position:absolute;right:24px;top:22px;}.faq-item[open] summary::after{content:'−';}
+.faq-item p{font-size:var(--readable-body);line-height:1.75;color:#fff6ff;text-shadow:0 1px 7px rgba(15,5,25,.7);margin:0;padding:0 24px 24px;}
+.back-to-top{display:inline-flex;gap:24px;align-items:center;color:#f4e3ff;text-decoration:none;border-bottom:1px solid rgba(230,200,250,.4);padding:14px 0;margin-top:24px;font-size:16px;}.back-to-top span{font-size:24px;}
+.footer-right{grid-column:2;display:flex;flex-direction:column;align-items:flex-start;gap:32px;}.legal-text{display:flex;flex-direction:column;gap:12px;}.legal-text p{font-size:14px;line-height:1.5;color:#e4d5ee;margin:0;}
+@media(max-width:1000px){#why .ai-results{column-gap:30px;}#why .ai-result-card{width:min(300px,94%);}#why .ai-result-image{height:260px;}}
+@media(max-width:767px){:root{--card-h:510px;}#why .ai-results{display:flex;flex-direction:column;gap:24px;}#why .ai-results-intro{order:0;}#why .ai-carousel{order:1;}#why .ai-results-grid{height:600px;}#why .ai-result-card{width:80vw;max-width:340px;}#why .ai-result-image{height:265px;}#why .ai-result-copy p{font-size:15px!important;}#courses .program-topics li{font-size:15px!important;}.footer-right{grid-column:auto;}.section{padding-top:88px;padding-bottom:70px;}.footer-grid{gap:36px;}#about .founders-story p{font-size:17px!important;}.faq-item summary{font-size:17px;padding-left:20px;}.faq-item p{padding-left:20px;padding-right:20px;}}
+@media(prefers-reduced-motion:reduce){.direction-card,.ai-result-card,.review-card{transition:none!important;}}
+</style>
+<style>
+.school-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}.info-from,.school-close{font-size:var(--readable-body);line-height:1.75;color:#fff6ff;text-shadow:0 1px 7px rgba(15,5,25,.7);}
+@media(max-width:900px){.school-cards{grid-template-columns:minmax(0,1fr);}.school-cards .info-card{width:100%;max-width:480px;margin-inline:auto;}}
+</style>
 </head>
 <body>
-
-<!-- Brand mark, referenced by <use> in the header and the form card. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <symbol id="bloom-mark" viewBox="0 0 49 48" fill="none">
-    <g clip-path="url(#bloom-mark-clip)">
+  <symbol id="multum-mark" viewBox="0 0 49 48" fill="none">
+    <g clip-path="url(#multum-mark-clip)">
       <path d="M48.4404 17.6588C47.7017 15.3617 46.2569 13.3584 44.3131 11.9362C42.3693 10.5141 40.0265 9.74617 37.6207 9.74268H37.0462C37.1235 10.2805 37.164 10.8231 37.1676 11.3665C37.1628 14.3622 36.0924 17.2579 34.1489 19.5323C32.2054 21.8066 29.5166 23.3102 26.5664 23.7724C26.6392 24.0729 26.7121 24.3733 26.8092 24.6655C26.9904 25.2224 27.2122 25.7651 27.4728 26.2894L27.4728 26.3543C27.5942 26.5898 27.7236 26.8252 27.8612 27.0526L27.9178 27.15C28.3242 27.8128 28.796 28.433 29.3259 29.0011L29.5687 29.2609L29.9652 29.6263C30.0866 29.74 30.2161 29.8536 30.3537 29.9592L30.7098 30.2515C30.8797 30.3814 31.0577 30.5032 31.2358 30.625L31.5595 30.8523C31.8508 31.0309 32.1502 31.2095 32.4577 31.3638C33.787 32.0468 35.2378 32.4594 36.7266 32.5778C38.2154 32.6963 39.7129 32.5182 41.1329 32.0539C41.4083 31.9667 41.6785 31.8637 41.9421 31.7454C44.6033 30.6611 46.7546 28.6033 47.961 25.9882C49.1674 23.3731 49.3387 20.3958 48.4404 17.6588Z" fill="white"/>
       <path d="M41.4966 33.1341C40.2425 33.5456 38.9316 33.7566 37.6122 33.7593C35.2977 33.7531 33.0303 33.1034 31.0617 31.8822C29.0931 30.6611 27.5005 28.9163 26.4607 26.8418C26.1937 27.0042 25.9428 27.1747 25.6515 27.3614C25.1901 27.702 24.7546 28.0765 24.3486 28.4819L24.3 28.5306C24.1058 28.7173 23.9278 28.9122 23.7497 29.1151L23.685 29.1963C23.1783 29.7906 22.7336 30.4354 22.3578 31.1206C22.3012 31.2261 22.2445 31.3235 22.196 31.4291C22.1474 31.5346 22.0341 31.7538 21.9613 31.9162C21.8885 32.0786 21.8237 32.2329 21.7671 32.3952C21.7104 32.5576 21.6538 32.6794 21.6052 32.8256C21.5567 32.9717 21.4677 33.2315 21.411 33.4345C21.3544 33.6375 21.3382 33.6699 21.3139 33.7917C21.2236 34.1255 21.1534 34.4644 21.1035 34.8066C20.8672 36.2866 20.9251 37.7989 21.2737 39.2564C21.6223 40.7139 22.2548 42.0879 23.1347 43.2992C23.2966 43.5184 23.4746 43.7376 23.6526 43.9406C25.3534 46.0837 27.7685 47.5385 30.4534 48.0372C33.1384 48.045 35.9125 48.045 38.2653 46.6547C40.6181 45.2645 42.3913 43.0685 43.2586 40.4708C44.1259 37.8732 44.029 35.0487 42.9856 32.517C42.5042 32.7574 42.0067 32.9636 41.4966 33.1341Z" fill="white"/>
       <path d="M20.0045 34.6197C20.4175 31.9862 21.6629 29.5556 23.5571 27.686C23.3224 27.4912 23.0796 27.2882 22.8287 27.1096C21.2988 25.9892 19.5119 25.2743 17.6334 25.0311H17.3987C16.9941 24.9905 16.5894 24.958 16.1686 24.958C14.3714 24.962 12.6002 25.3895 10.9978 26.206C9.39542 27.0226 8.00658 28.2053 6.9432 29.659C6.78135 29.8863 6.63568 30.1217 6.49002 30.3572C5.03583 32.6434 4.4443 35.3759 4.82225 38.0613C5.2002 40.7467 6.52271 43.208 8.55098 45.0008C10.5793 46.7937 13.1796 47.7998 15.8825 47.8376C18.5854 47.8754 21.2127 46.9424 23.29 45.207C22.9121 44.8221 22.5632 44.4096 22.2461 43.9729C21.2738 42.6404 20.575 41.1275 20.1902 39.5219C19.8054 37.9163 19.7423 36.25 20.0045 34.6197Z" fill="white"/>
       <path d="M6.01393 28.9525C7.76739 26.527 10.3287 24.8119 13.234 24.1178C16.1392 23.4238 19.1961 23.7967 21.8509 25.169C21.9723 24.8848 22.0856 24.6006 22.1827 24.3002C22.7183 22.6659 22.8815 20.9318 22.6602 19.2258V18.9903C22.6602 18.7955 22.5873 18.6006 22.5469 18.4139C22.5064 18.2271 22.4821 18.1054 22.4417 17.9592C22.4012 17.8131 22.3608 17.6426 22.3122 17.4802C22.2636 17.3178 22.1827 17.0905 22.118 16.8956C22.0532 16.7008 22.029 16.652 21.9804 16.5384C21.8586 16.2165 21.7181 15.902 21.5596 15.5966C20.8885 14.2565 19.9583 13.0639 18.8232 12.0881C17.6881 11.1124 16.3708 10.3731 14.948 9.91321C14.6972 9.83202 14.4544 9.76706 14.2035 9.71023C13.2994 9.47628 12.3696 9.35628 11.4359 9.35299C8.9636 9.30745 6.54433 10.0747 4.54726 11.5375C2.55019 13.0004 1.08498 15.0786 0.375205 17.4551C-0.334567 19.8315 -0.249922 22.3757 0.616224 24.6993C1.48237 27.023 3.08245 28.9986 5.17231 30.3246C5.42183 29.8488 5.70301 29.3904 6.01393 28.9525Z" fill="white"/>
       <path d="M22.5278 15.0688C23.735 17.4435 24.1546 20.143 23.7255 22.7738C24.025 22.7738 24.3325 22.8225 24.6481 22.8225C25.2227 22.8148 25.796 22.766 26.3637 22.6764C28.9618 22.273 31.3392 20.9756 33.0885 19.0065L33.2585 18.8198C33.4041 18.6493 33.5417 18.4707 33.6793 18.2839C33.8169 18.0972 33.833 18.0891 33.9059 17.9835C33.9787 17.878 34.1406 17.6425 34.2458 17.472C34.351 17.3015 34.4076 17.2122 34.4804 17.0823C34.5533 16.9524 34.6666 16.7575 34.7475 16.587C34.8284 16.4165 34.9013 16.2785 34.9741 16.1243C35.0469 15.97 35.1117 15.8076 35.1845 15.6452C35.2573 15.4829 35.314 15.2961 35.3706 15.1175C35.4273 14.9389 35.4839 14.8008 35.5325 14.6466C35.581 14.4923 35.6377 14.2488 35.6862 14.0458C35.7348 13.8428 35.7591 13.7535 35.7833 13.6073C35.8076 13.4612 35.8643 13.1364 35.8966 12.8929C35.929 12.6493 35.8966 12.6493 35.9452 12.5194C35.9452 12.154 36.0018 11.7887 36.0018 11.4071V10.5952C35.8453 7.88465 34.727 5.31985 32.8491 3.36487C30.9712 1.40989 28.4579 0.193859 25.7639 -0.0631835C23.0699 -0.320226 20.3731 0.398699 18.1616 1.96351C15.9501 3.52831 14.37 5.83563 13.707 8.46797C14.2332 8.56239 14.7523 8.69259 15.2608 8.85768C16.8205 9.36099 18.2656 10.1689 19.5128 11.2349C20.76 12.3008 21.7847 13.6038 22.5278 15.0688Z" fill="white"/>
     </g>
-    <defs><clipPath id="bloom-mark-clip"><rect width="49" height="48" fill="white"/></clipPath></defs>
+    <defs><clipPath id="multum-mark-clip"><rect width="49" height="48" fill="white"/></clipPath></defs>
   </symbol>
 </svg>
-
-<div class="scroll-container" id="scrollContainer">
-  <main class="fixed-viewport" id="main">
-
-    <!-- Brand header -->
-    <div class="premium-brand-header" id="brandHeader">
-      <svg viewBox="0 0 49 48" class="premium-brand-logo-svg" aria-hidden="true" focusable="false"><use href="#bloom-mark"/></svg>
-      <span class="premium-brand-text">Bloom</span>
-    </div>
-
-    <!-- Navigation -->
-    <header class="premium-header-nav" id="navHeader">
-      <nav class="premium-nav-desktop">
-        <ul class="premium-nav-list">
-          <li class="premium-nav-item"><a class="premium-nav-link" aria-disabled="true">Atelier</a></li>
-          <li class="premium-nav-item"><a class="premium-nav-link" aria-disabled="true">Collections</a></li>
-          <li class="premium-nav-item"><a class="premium-nav-link" aria-disabled="true">Rituals</a></li>
-          <li class="premium-nav-item"><a class="premium-nav-link" aria-disabled="true">About</a></li>
-          <li class="premium-nav-item"><a class="premium-nav-link" aria-disabled="true">Contact</a></li>
-        </ul>
-      </nav>
-      <button type="button" class="premium-hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-        <span class="premium-hamburger-line" id="hLine1"></span>
-        <span class="premium-hamburger-line" id="hLine2"></span>
-        <span class="premium-hamburger-line" id="hLine3"></span>
-      </button>
-    </header>
-
-    <!-- Mobile menu -->
-    <div class="premium-mobile-menu" id="mobileMenu">
-      <nav>
-        <ul class="premium-mobile-menu-list">
-          <li><a class="premium-mobile-menu-link" aria-disabled="true">Atelier</a></li>
-          <li><a class="premium-mobile-menu-link" aria-disabled="true">Collections</a></li>
-          <li><a class="premium-mobile-menu-link" aria-disabled="true">Rituals</a></li>
-          <li><a class="premium-mobile-menu-link" aria-disabled="true">About</a></li>
-          <li><a class="premium-mobile-menu-link" aria-disabled="true">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-
-    <!-- Botanical card -->
-    <div class="premium-botanical-card" id="botanicalCard">
-      <h1 class="premium-card-title">Nothing here was <span class="italic">picked.</span></h1>
-      <p class="premium-card-subtext">An olfactive atelier. Species are designed as data, run until they hold, and compiled into extrait. Five have been released. The remainder stay in the registry.</p>
-      <button class="premium-action-circle" id="ctaBtn" aria-label="Explore systems">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 24" stroke="currentColor" aria-hidden="true" focusable="false">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M29.5 4.5L37 12m0 0l-7.5 7.5M37 12H3"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Feature cards -->
-    <div class="premium-features-container" id="featuresContainer" style="visibility:hidden">
-      <div class="premium-feature-card" id="fCard1" style="opacity:0">
-        <div class="premium-feature-icon-wrapper">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg>
-        </div>
-        <h2 class="premium-feature-title">Seed</h2>
-        <p class="premium-feature-desc">A number and a set of constraints: the hour it opens, the air it opens into, what it may spend energy on. Nothing is inherited from a living plant.</p>
-      </div>
-      <div class="premium-feature-card" id="fCard2" style="opacity:0">
-        <div class="premium-feature-icon-wrapper">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3m14.5-4.5l-11 11m11 0l-11-11"/></svg>
-        </div>
-        <h2 class="premium-feature-title">Run</h2>
-        <p class="premium-feature-desc">Solved pass after pass until it stops changing, or until we stop it. Most collapse. Surfacing is a separate step, so a species can be known by what it released and never seen at all.</p>
-      </div>
-      <div class="premium-feature-card" id="fCard3" style="opacity:0">
-        <div class="premium-feature-icon-wrapper">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M16 3L7 12h12l-6 9"/></svg>
-        </div>
-        <h2 class="premium-feature-title">Compile</h2>
-        <p class="premium-feature-desc">Each modelled volatile is matched to a material on the bench and weighed against the others. Nothing here yields an oil, so every formula is built the way lilac and lily of the valley have always been built.</p>
-      </div>
-    </div>
-
-    <!-- Mission text -->
-    <div class="mission-container" id="missionContainer" style="visibility:hidden">
-      <div class="mission-inner">
-        <div class="mission-para" id="mPara1" style="opacity:0">The <span class="mission-pill">file</span> is the entire plant. There is nothing behind it to cut, press or keep.</div>
-        <div class="mission-para" id="mPara2" style="opacity:0">Nothing here is extracted. A species is <span class="mission-pill">compiled</span> material by material, from what the model says it would have released.</div>
-        <div class="mission-para" id="mPara3" style="opacity:0">There is no garden to visit. You are the only <span class="mission-pill">climate</span> these species will ever grow in.</div>
-      </div>
-    </div>
-
-    <!-- Feedback form -->
-    <div class="feedback-container" id="feedbackContainer" style="visibility:hidden">
-      <div class="feedback-form-card" id="feedbackForm" style="opacity:0">
-        <svg viewBox="0 0 49 48" class="fb-logo" aria-hidden="true" focusable="false"><use href="#bloom-mark"/></svg>
-        <h2 class="fb-title">The seed registry</h2>
-        <p class="fb-sub">We write when a species resolves. Four or five times a year, and never otherwise.</p>
-        <form class="fb-form" id="fbForm">
-          <input type="email" required placeholder="name@ecosystem.com" class="fb-input" id="fbEmail" aria-label="Email address" autocomplete="email">
-          <button type="submit" class="fb-btn" id="fbBtn">REGISTER</button>
-        </form>
-        <p class="fb-success" id="fbSuccess" role="status">Filed. You will hear when the next species resolves.</p>
-      </div>
-    </div>
-
-    <!-- Video background -->
+<div class="scroll-container">
+  <div class="fixed-bg">
     <div class="bg-wrapper" id="bgWrapper">
-      <video id="v1" preload="auto" muted playsinline><source src="videos/mobile/bloom-bg-1.mp4" media="(max-width: 820px)" type="video/mp4"><source src="videos/bloom-bg-1.mp4" type="video/mp4"></video>
-      <video id="v2" preload="auto" muted playsinline><source src="videos/mobile/bloom-bg-2.mp4" media="(max-width: 820px)" type="video/mp4"><source src="videos/bloom-bg-2.mp4" type="video/mp4"></video>
-      <video id="v3" preload="auto" muted playsinline><source src="videos/mobile/bloom-bg-3.mp4" media="(max-width: 820px)" type="video/mp4"><source src="videos/bloom-bg-3.mp4" type="video/mp4"></video>
+      <video id="v1" preload="auto" muted playsinline><source src="videos/mobile/bloom-bg-1.mp4" media="(max-width:820px)" type="video/mp4"><source src="videos/bloom-bg-1.mp4" type="video/mp4"></video>
+      <video id="v2" preload="auto" muted playsinline><source src="videos/mobile/bloom-bg-2.mp4" media="(max-width:820px)" type="video/mp4"><source src="videos/bloom-bg-2.mp4" type="video/mp4"></video>
+      <video id="v3" preload="auto" muted playsinline><source src="videos/mobile/bloom-bg-3.mp4" media="(max-width:820px)" type="video/mp4"><source src="videos/bloom-bg-3.mp4" type="video/mp4"></video>
       <canvas id="mainCanvas"></canvas>
     </div>
+    <div class="bg-vignette"></div>
+  </div>
 
-    <!-- Loading -->
-    <div class="loading-screen" id="loadingScreen">
-      <svg class="loading-spinner" viewBox="0 0 64 64" style="transform:rotate(-90deg)" aria-hidden="true" focusable="false">
-        <circle cx="32" cy="32" r="28" stroke="#1f2937" stroke-width="2" fill="transparent"/>
-        <circle cx="32" cy="32" r="28" stroke="#fff" stroke-width="3" fill="transparent" stroke-dasharray="176" stroke-dashoffset="132" stroke-linecap="round"/>
-      </svg>
-      <p class="loading-text">Loading experience</p>
-    </div>
+  <header>
+    <a class="brand" href="#top"><svg viewBox="0 0 49 48"><use href="#multum-mark"/></svg><span>MULTUM.AI</span></a>
+    <nav class="nav">
+      <a href="#school">О школе</a><a href="#courses">Курсы</a><a href="#why">Зачем AI?</a><a href="#about">О нас</a><a href="#reviews">Отзывы</a><a href="#faq">FAQ</a>
+    </nav>
+  </header>
 
-    <!-- Error -->
-    <div class="error-screen" id="errorScreen">
-      <div class="error-card">
-        <p class="error-title">Video Load Error</p>
-        <p class="error-msg">Unable to load video resources. Please check your connection and try reloading.</p>
+  <main class="page">
+    <section class="section hero" id="top">
+      <div class="section-inner">
+        <div class="hero-copy">
+          <div class="eyebrow">THE CREATIVE INTELLIGENCE COMPANY</div>
+          <h1>Нейросети —<br>это уже не <em>будущее.</em></h1>
+          <p class="hero-lead">Это инструмент, который можно превратить в профессию, бизнес и деньги.</p>
+          
+        </div>
       </div>
-    </div>
+      <button class="hero-arrow" onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})" aria-label="К курсам">
+        <svg viewBox="0 0 40 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M29.5 4.5 37 12m0 0-7.5 7.5M37 12H3"/></svg>
+      </button>
+    </section>
 
+    <section class="section courses" id="courses" aria-labelledby="learning-title">
+      <div class="section-inner learning-content">
+        <div class="learning-heading"><div class="eyebrow">ОБУЧЕНИЕ MULTUM.AI</div><h2 id="learning-title">Основные программы</h2></div>
+        <div class="main-programs">
+          <article class="program-glass main-program"><div class="program-inner"><div class="program-tier">MINI</div><h3>НЕЙРОСЕТИ С 0</h3><div class="program-price">7 900 ₽</div><p class="program-subtitle">От первого запроса до уверенной работы с AI</p><details class="program-disclosure"><summary>Программа <span>13 тем</span></summary><ul class="program-topics"><li>Основы AI</li><li>ChatGPT с нуля</li><li>Claude и Gemini</li><li>Постановка задач</li><li>Промптинг</li><li>Работа с файлами</li><li>Анализ документов</li><li>Таблицы и данные</li><li>AI для работы</li><li>Генерация изображений</li><li>AI для личной эффективности</li><li>Личный AI-ассистент</li><li>Финальный практический проект</li></ul></details><p class="program-result">Понять AI → научиться работать с AI → самостоятельно решать задачи с помощью нейросетей.</p><a class="program-cta" href="#apply" data-program="MINI — НЕЙРОСЕТИ С 0">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+          <article class="program-glass main-program maxi-program"><div class="program-inner"><div class="program-tier">MAXI · КОМПЛЕКСНАЯ ПРОГРАММА</div><h3>AI PROFESSIONAL</h3><div class="program-price">99 900 ₽</div><p class="program-subtitle">Создавай. Автоматизируй. Запускай.</p><p class="maxi-intro">MAXI — полноценная профессиональная программа, а не просто расширенная версия MINI.</p><details class="program-disclosure"><summary>Программа <span>10 тем</span></summary><ul class="program-topics"><li>AI CREATOR</li><li>AI DESIGN</li><li>AI VIDEO</li><li>AI 3D</li><li>AI WEBSITES</li><li>AI GAMES</li><li>AI AGENTS</li><li>AI AUTOMATION</li><li>AI MARKETING</li><li>AI PRODUCT</li></ul></details><a class="program-cta" href="#apply" data-program="MAXI — AI PROFESSIONAL">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+        </div>
+        <div class="school-block" id="school">
+          <div class="school-head">
+            <h2>AI меняет не технологии. Он меняет возможности человека.</h2>
+            <p class="copy-panel school-lead">MULTUM.AI — школа, где искусственный интеллект превращается из набора инструментов в ваш личный рабочий ресурс. Мы учим не запоминать десятки сервисов, а понимать, как заставлять AI работать на вашу цель: быстрее создавать, решать сложные задачи, автоматизировать рутину и превращать идеи в реальные проекты.</p>
+          </div>
+          <div class="school-cards">
+            <article class="program-glass info-card"><div class="program-inner"><div class="program-tier">01</div><p class="info-from">Вместо бесконечной теории —</p><h4>практика.</h4></div></article>
+            <article class="program-glass info-card"><div class="program-inner"><div class="program-tier">02</div><p class="info-from">Вместо разрозненных инструментов —</p><h4>система.</h4></div></article>
+            <article class="program-glass info-card"><div class="program-inner"><div class="program-tier">03</div><p class="info-from">Вместо наблюдения за технологиями —</p><h4>способность создавать с их помощью.</h4></div></article>
+          </div>
+          <p class="copy-panel school-close"><strong>Вы уходите не просто со знаниями. Вы уходите с новым уровнем возможностей.</strong> Умением самостоятельно осваивать новые AI-технологии, собирать из них рабочие решения и применять их там, где раньше требовались время, деньги и целая команда.</p>
+        </div>
+        <div class="directions-heading"><div class="eyebrow">AI PROFESSIONAL DIRECTIONS</div><h3>Отдельные AI-направления</h3></div>
+        <div class="directions-carousel" role="region" aria-roledescription="карусель" aria-label="Отдельные AI-направления">
+          <div class="directions-rail" id="directionsRail" tabindex="0" aria-label="Листайте направления стрелками или свайпом">
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">01 / DIRECTION</div><h4>AI AGENTS + AI AUTOMATION</h4><div class="program-price">59 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>16 тем</span></summary><ul class="program-topics"><li>AI-агенты</li><li>AI-ассистенты</li><li>архитектура агентов</li><li>Memory</li><li>Tools</li><li>API</li><li>Webhooks</li><li>Make</li><li>n8n</li><li>Zapier</li><li>CRM</li><li>Telegram</li><li>автоматизация продаж</li><li>автоматизация контента</li><li>автоматизация бизнес-процессов</li><li>создание AI-систем</li></ul></details><a class="program-cta" href="#apply" data-program="AI AGENTS + AI AUTOMATION">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">02 / DIRECTION</div><h4>AI WEBSITES</h4><div class="program-price">49 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>10 тем</span></summary><ul class="program-topics"><li>создание сайтов с AI</li><li>структура сайта</li><li>UI / UX</li><li>AI Coding</li><li>генерация кода</li><li>HTML / CSS / JavaScript</li><li>лендинги</li><li>интерактивные элементы</li><li>публикация сайта</li><li>доработка сайтов через AI</li></ul></details><a class="program-cta" href="#apply" data-program="AI WEBSITES">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">03 / DIRECTION</div><h4>AI GAMES</h4><div class="program-price">45 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>8 тем</span></summary><ul class="program-topics"><li>концепция игры</li><li>сценарий</li><li>персонажи</li><li>игровые механики</li><li>игровые ассеты</li><li>кодирование с AI</li><li>создание собственной игры</li><li>публикация проекта</li></ul></details><a class="program-cta" href="#apply" data-program="AI GAMES">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">04 / DIRECTION</div><h4>AI 3D</h4><div class="program-price">25 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>6 тем</span></summary><ul class="program-topics"><li>3D-объекты</li><li>AI-рендеры</li><li>3D-персонажи</li><li>виртуальные продукты</li><li>предметная визуализация</li><li>рекламные 3D-сцены</li></ul></details><a class="program-cta" href="#apply" data-program="AI 3D">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">05 / DIRECTION</div><h4>AI VIDEO</h4><div class="program-price">20 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>9 тем</span></summary><ul class="program-topics"><li>Text-to-Video</li><li>Image-to-Video</li><li>AI-анимация</li><li>рекламные ролики</li><li>AI-персонажи</li><li>AI-озвучка</li><li>Lip-sync</li><li>монтаж</li><li>создание AI-видео</li></ul></details><a class="program-cta" href="#apply" data-program="AI VIDEO">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">06 / DIRECTION</div><h4>AI CREATOR</h4><div class="program-price">14 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>9 тем</span></summary><ul class="program-topics"><li>AI-контент</li><li>сценарии</li><li>Reels / Shorts</li><li>рекламные ролики</li><li>storytelling</li><li>контент-серии</li><li>AI-персонажи</li><li>виртуальные персонажи</li><li>контент-проекты</li></ul></details><a class="program-cta" href="#apply" data-program="AI CREATOR">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">07 / DIRECTION</div><h4>AI DESIGN</h4><div class="program-price">14 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>9 тем</span></summary><ul class="program-topics"><li>визуальная концепция</li><li>фирменный стиль</li><li>рекламные креативы</li><li>баннеры</li><li>презентации</li><li>упаковка</li><li>Product Visuals</li><li>AI-фотосессии</li><li>визуал для брендов</li></ul></details><a class="program-cta" href="#apply" data-program="AI DESIGN">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">08 / ОТДЕЛЬНОЕ НАПРАВЛЕНИЕ</div><h4>AI PRODUCT</h4><div class="program-price">+10 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>10 тем</span></summary><ul class="program-topics"><li>AI-сервис</li><li>AI-агент</li><li>Telegram-бот</li><li>сайт</li><li>цифровой продукт</li><li>бренд</li><li>контент-проект</li><li>мини-игра</li><li>автоматизированная система</li><li>рекламный проект</li></ul></details><a class="program-cta" href="#apply" data-program="AI PRODUCT">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+<article class="program-glass direction-card"><div class="program-inner"><div class="program-tier">09 / ОТДЕЛЬНОЕ НАПРАВЛЕНИЕ</div><h4>AI MARKETING</h4><div class="program-price">+5 900 ₽</div><details class="program-disclosure" open><summary>Программа <span>10 тем</span></summary><ul class="program-topics"><li>анализ ЦА</li><li>анализ конкурентов</li><li>создание оффера</li><li>контент-стратегия</li><li>рекламные креативы</li><li>воронки</li><li>AI-продажи</li><li>маркетинговые гипотезы</li><li>анализ результатов</li><li>персонализация маркетинга</li></ul></details><a class="program-cta" href="#apply" data-program="AI MARKETING">Выбрать программу <span aria-hidden="true">↗</span></a></div></article>
+          </div>
+          <div class="directions-controls"><button type="button" id="directionPrev" aria-label="Предыдущее направление">←</button><span id="directionPosition" aria-live="polite" aria-atomic="true">1 / 9</span><button type="button" id="directionNext" aria-label="Следующее направление">→</button></div>
+        </div>
+        
+      </div>
+    </section>
+
+
+    <section class="section" id="why" aria-labelledby="why-title">
+      <div class="section-inner ai-results">
+        <div class="why-copy ai-results-intro">
+          <h2 id="why-title">Зачем тебе AI?</h2>
+          <p class="featured-copy why-featured copy-panel">AI помогает превращать идеи в результат: создавать быстрее, автоматизировать рутину, находить решения и делать то, для чего раньше нужны были время, навыки и целая команда.</p>
+        </div>
+        <div class="ai-carousel" role="region" aria-label="Результаты работы с AI" aria-roledescription="карусель">
+        <div class="ai-results-grid" id="aiResultsRail" tabindex="0" aria-label="Листайте карточки снизу вверх или используйте стрелки">
+          <article class="ai-result-card" aria-label="Персонажи">
+            <img class="ai-result-image" src="media/01-ai-character.png" alt="Авторский цифровой персонаж" loading="lazy" width="1536" height="1024" draggable="false">
+            <div class="ai-result-copy"><h3>AI CHARACTER</h3><p>Уникальные цифровые герои для брендов, контента и собственных проектов.</p></div>
+          </article>
+          <article class="ai-result-card" aria-label="Продукты">
+            <img class="ai-result-image" src="media/02-ai-product.png" alt="Дизайнерский флакон парфюма" loading="lazy" width="1536" height="1024" draggable="false">
+            <div class="ai-result-copy"><h3>AI PRODUCT</h3><p>Дизайн предметов и упаковки: от идеи до убедительного образа готового продукта.</p></div>
+          </article>
+          <article class="ai-result-card" aria-label="3D-объекты">
+            <img class="ai-result-image" src="media/03-ai-3d.png" alt="Коллекционная архитектурная скульптура" loading="lazy" width="1536" height="1024" draggable="false">
+            <div class="ai-result-copy"><h3>AI 3D</h3><p>Архитектурные формы, дизайнерские объекты и коллекционные скульптуры.</p></div>
+          </article>
+          <article class="ai-result-card" aria-label="Визуальные кампании">
+            <img class="ai-result-image" src="media/04-ai-visual.png" alt="Рекламная fashion-сцена" loading="lazy" width="1536" height="1024" draggable="false">
+            <div class="ai-result-copy"><h3>AI VISUAL</h3><p>Рекламные сцены и fashion-визуалы с цельной эстетикой и характером.</p></div>
+          </article>
+          <article class="ai-result-card" aria-label="Команда AI-агентов">
+            <img class="ai-result-image" src="media/05-ai-automation.png" alt="Команда из четырёх AI-агентов" loading="lazy" width="1536" height="1024" draggable="false">
+            <div class="ai-result-copy"><h3>AI AUTOMATION</h3><p>Агенты с разными ролями, объединённые в систему для ваших задач.</p></div>
+          </article>
+        </div>
+        <div class="ai-carousel-controls"><button type="button" id="aiPrev" aria-label="Предыдущая карточка">↑</button><span id="aiPosition" aria-live="polite" aria-atomic="true">1 / 5</span><button type="button" id="aiNext" aria-label="Следующая карточка">↓</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="section-inner about-grid">
+        <div class="about-copy">
+          
+          <h2>Мы не просто учим AI. Мы сами строим с его помощью.</h2>
+          <div class="founders-story"><p>Мы — Алина и Даша, основатели MULTUM.AI. Мы познакомились в сфере инфобизнеса и со временем пришли к главной для нас мысли: искусственный интеллект способен не просто упрощать задачи, а менять то, как человек работает, создаёт и развивает свои идеи.</p>
+          <p>Мы сами прошли путь от первых экспериментов с AI до системного использования технологий и поняли: проблема сегодня не в нехватке инструментов, а в том, что люди часто не знают, как объединить их в понятную рабочую систему.</p>
+          <p>Так появилась MULTUM.AI — школа, которую мы создаём для новой реальности. Здесь мы учим не отдельным сервисам, а умению работать с AI, создавать решения и превращать идеи в реальный результат.</p>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <section class="section apply" id="apply">
+      <div class="section-inner apply-inner">
+        
+        <h2>Оставь заявку.<br>Наши менеджеры с тобой свяжутся.</h2>
+        <p class="apply-sub copy-panel">Расскажи немного о себе и о том, чему хочешь обучиться. Мы поможем выбрать подходящую программу.</p>
+        <div class="form-card"><form class="form" id="leadForm">
+          <div class="field"><label>1 / Имя</label><input required placeholder="Как тебя зовут"></div>
+          <div class="field"><label>2 / Юз для ТГ</label><input required placeholder="@username"></div>
+          <div class="field"><label>3 / Номер телефона</label><input required type="tel" placeholder="+7 ___ ___ __ __"></div>
+          <div class="field"><label>4 / Чему хочешь обучиться?</label><input required placeholder="Например: AI, создание контента, автоматизация"></div>
+          <div class="field full"><button type="submit">ОТПРАВИТЬ ЗАЯВКУ</button></div>
+        </form></div>
+      </div>
+    </section>
+
+    <section class="section reviews" id="reviews">
+      <div class="section-inner">
+        <div class="section-heading"><div><h2>Что говорят<br>ученики</h2></div><p>Отзывы собраны в динамичную карусель. Карточки можно листать, перетаскивать и рассматривать в перспективе.</p></div>
+        <div class="review-stage" id="reviewStage">
+          <article class="review-card"><div class="stars">★★★★★</div><div class="review-text">«После обучения я наконец перестала открывать двадцать сервисов и не понимать, что с ними делать. Теперь у меня есть понятная система.»</div><div class="review-name">Анна · предприниматель</div></article>
+          <article class="review-card"><div class="stars">★★★★★</div><div class="review-text">«Самое ценное — не отдельные нейросети, а то, как выстраивать работу с AI под конкретную задачу. Очень быстро начинает экономить время.»</div><div class="review-name">Мария · контент</div></article>
+          <article class="review-card"><div class="stars">★★★★★</div><div class="review-text">«Я пришла просто разобраться в AI, а в итоге собрала рабочий процесс, который теперь использую каждый день.»</div><div class="review-name">Екатерина · специалист</div></article>
+          <article class="review-card"><div class="stars">★★★★★</div><div class="review-text">«Понравилось, что здесь не пытаются завалить теорией. Показывают, как реально превращать идею в готовый результат.»</div><div class="review-name">Дарья · создатель проектов</div></article>
+          <article class="review-card"><div class="stars">★★★★★</div><div class="review-text">«AI перестал казаться чем-то сложным и далёким. Теперь я понимаю, что именно могу сделать с ним в своей работе.»</div><div class="review-name">Алексей · предприниматель</div></article>
+        </div>
+      <div class="review-controls"><button type="button" id="reviewPrev" aria-label="Предыдущий отзыв">←</button><span id="reviewPosition" aria-live="polite">1 / 5</span><button type="button" id="reviewNext" aria-label="Следующий отзыв">→</button></div></div>
+    </section>
+
+    <section class="section faq-section" id="faq" aria-labelledby="faq-title"><div class="section-inner faq-inner"><h2 id="faq-title">Частые вопросы</h2><div class="faq-list"><details class="faq-item"><summary>Можно начать без опыта работы с AI?</summary><p>Да. MINI «Нейросети с 0» начинается с основ AI и первых запросов к ChatGPT. Программа включает постановку задач, промптинг, работу с файлами и личного AI-ассистента.</p></details><details class="faq-item"><summary>Чем MINI отличается от MAXI?</summary><p>MINI — стартовая программа за 7 900 ₽. MAXI «AI PROFESSIONAL» за 99 900 ₽ — самостоятельная комплексная профессиональная программа: создание контента, дизайн, видео, 3D, сайты, игры, агенты, автоматизация, маркетинг и продукты.</p></details><details class="faq-item"><summary>Можно выбрать только одно направление?</summary><p>Да. В блоке отдельных направлений можно выбрать нужную программу. AI PRODUCT и AI MARKETING также представлены там как отдельные направления.</p></details><details class="faq-item"><summary>Будет ли практический результат?</summary><p>В MINI предусмотрен финальный практический проект. Отдельные направления посвящены созданию конкретных результатов: сайтов, игр, видео, 3D-объектов и AI-систем.</p></details><details class="faq-item"><summary>Как узнать, что входит в программу?</summary><p>На карточке нажмите «Программа»: откроется полный список тем. Состав программ и цены указаны в разделе обучения.</p></details><details class="faq-item"><summary>Как выбрать подходящую программу?</summary><p>Оставьте заявку в форме на сайте и расскажите о своей задаче. Менеджер свяжется с вами и поможет подобрать программу.</p></details></div></div></section>
+    <section class="section footer-section">
+      <div class="section-inner footer-grid">
+        <div>
+          
+          <div class="ref-title">Реферальная<br>программа</div>
+          <p class="ref-copy">Приглашай друзей в MULTUM.AI, используй свой реферальный код и получай вознаграждение за рекомендации.</p>
+          <div class="ref-row"><input id="refCode" placeholder="Введи реферальный код"><button class="ref-btn" id="refBtn">ОТПРАВИТЬ</button></div>
+        </div>
+        <div>
+          <div class="social-eyebrow">MULTUM.AI / SOCIAL</div>
+          <div class="social-title">MULTUM.AI</div>
+          <p class="social-copy">Наши проекты, новые программы и всё, что мы создаём вокруг MULTUM.AI.</p>
+          <div class="social-links">
+            <a href="https://www.instagram.com/multumai?xtok=dnV0dnRmaml2N3dl" target="_blank" rel="noopener noreferrer" aria-label="Instagram MULTUM.AI"><span class="social-icon instagram-icon" aria-hidden="true"></span><span>Instagram</span></a>
+            <a href="https://t.me/multumai" target="_blank" rel="noopener noreferrer" aria-label="Telegram MULTUM.AI"><span class="social-icon telegram-icon" aria-hidden="true"></span><span>Telegram</span></a>
+          </div>
+          <a class="back-to-top" href="#top">Наверх <span aria-hidden="true">↑</span></a><div class="copyright">MULTUM.AI · 2026</div>
+        </div>
+        <div class="footer-right"><div class="ad"><small>Рекламная интеграция</small><p>Место под рекламную интеграцию бренда / партнёра</p></div><div class="legal-text" aria-label="Правовые документы"><p>Пользовательское соглашение</p><p>Политика конфиденциальности</p><p>Публичная оферта ОУ</p><p>Публичная оферта ИКУ</p></div></div>
+      </div>
+    </section>
   </main>
 </div>
 
 <script>
 (function(){
-  var container = document.getElementById('scrollContainer');
-  var videos = { v1: document.getElementById('v1'), v2: document.getElementById('v2'), v3: document.getElementById('v3') };
-  var canvas = document.getElementById('mainCanvas');
-  var bgWrapper = document.getElementById('bgWrapper');
-  var brandHeader = document.getElementById('brandHeader');
-  var navHeader = document.getElementById('navHeader');
-  var botanicalCard = document.getElementById('botanicalCard');
-  var featuresContainer = document.getElementById('featuresContainer');
-  var fCard1 = document.getElementById('fCard1');
-  var fCard2 = document.getElementById('fCard2');
-  var fCard3 = document.getElementById('fCard3');
-  var missionContainer = document.getElementById('missionContainer');
-  var mPara1 = document.getElementById('mPara1');
-  var mPara2 = document.getElementById('mPara2');
-  var mPara3 = document.getElementById('mPara3');
-  var feedbackContainer = document.getElementById('feedbackContainer');
-  var feedbackForm = document.getElementById('feedbackForm');
-  var loadingScreen = document.getElementById('loadingScreen');
-  var errorScreen = document.getElementById('errorScreen');
+  const videos={v1:document.getElementById('v1'),v2:document.getElementById('v2'),v3:document.getElementById('v3')};
+  const canvas=document.getElementById('mainCanvas'), ctx=canvas.getContext('2d',{alpha:false});
+  const bg=document.getElementById('bgWrapper');
+  const backgroundReduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const durations={v1:0,v2:0,v3:0}, posters={};
+  let progress=0, target=0, lastSeekAt=0, lastSeek={v1:-1,v2:-1,v3:-1}, pendingDraw=false, lastActive='v1';
 
-  // Scroll progress 0..1 maps onto three videos played back to back.
-  // 0.333/0.666 are the section seams; they are deliberately the rounded
-  // values the animation was authored against, not exactly 1/3 and 2/3.
-  var SECTION_1_END = 0.333, SECTION_2_END = 0.666, SECTION_SCALE = 3;
-  var SCROLL_EASE = 0.08;            // lerp factor toward the scroll target
-  var METADATA_TIMEOUT_MS = 8000;    // give up waiting for duration metadata
-  var PRIME_RETRY_MS = 1000;         // min gap between autoplay-unlock retries
-
-  var targetProgress = 0, currentProgress = 0;
-  var durations = { v1: 0, v2: 0, v3: 0 };
-  var metaLoaded = { v1: false, v2: false, v3: false };
-  var seeking = { v1: false, v2: false, v3: false };
-  var pendingSeek = { v1: -1, v2: -1, v3: -1 };
-  var canvasCtx = null;
-
-  // Posters double as the fallback frame and as what we paint while the
-  // videos are still priming.
-  var posters = {};
-  ['v1','v2','v3'].forEach(function(key, i) {
-    var img = new Image();
-    img.decoding = 'async';
-    img.onload = function() { drawFrame(); };
-    img.src = 'posters/bg-' + (i + 1) + '.jpg';
-    posters[key] = img;
+  ['v1','v2','v3'].forEach((k,i)=>{
+    const img=new Image(); posters[k]=img; img.onload=()=>{if(k===active(progress))draw();}; img.src='posters/bg-'+(i+1)+'.jpg';
+    const v=videos[k];
+    v.loop=false; v.autoplay=false; v.pause();
+    v.addEventListener('loadedmetadata',()=>{durations[k]=v.duration||10; if(k===active(progress)) seekToProgress(true);});
+    v.addEventListener('seeked',()=>{ if(k===active(progress)) { pendingDraw=false; draw(); } });
   });
 
-  // iOS ignores preload="auto" on a paused <video>: it fetches metadata and
-  // stops, so readyState never reaches 2 and nothing can be drawn from it.
-  // A muted inline play() forces the decode; we pause again immediately.
-  // Autoplay is still refused outright in Low Power Mode, hence the retry
-  // on the first user gesture.
-  var painted = false, videoDrawn = false;
-  function revealStage() {
-    if (loadingScreen) loadingScreen.classList.add('hidden');
+  function resize(){
+    const r=canvas.parentElement.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);
+    canvas.width=Math.round(r.width*d); canvas.height=Math.round(r.height*d);
+    canvas.style.width=r.width+'px'; canvas.style.height=r.height+'px';
+    draw();
   }
 
-  var primed = {};
-  function primeVideos() {
-    ['v1','v2','v3'].forEach(function(key) {
-      var v = videos[key];
-      if (!v || primed[key]) return;
-      var attempt;
-      try { attempt = v.play(); } catch (e) { return; }
-      if (attempt && attempt.then) {
-        attempt.then(function() {
-          primed[key] = true;
-          v.pause();
-          try { v.currentTime = 0; } catch (e) {}
-          drawFrame();
-        }).catch(function() {});
-      } else {
-        primed[key] = true;
-        try { v.pause(); } catch (e) {}
-      }
-    });
+  // Background scenes are tied to the real page sections, not arbitrary 34%/67% cuts.
+  // This keeps the petal motion alive while entering and moving through the application block.
+  const sceneAnchors={apply:null,reviews:null};
+  function refreshSceneAnchors(){
+    const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    sceneAnchors.apply=Math.max(0,Math.min(1,(document.getElementById('apply').offsetTop)/max));
+    sceneAnchors.reviews=Math.max(sceneAnchors.apply+0.001,Math.min(1,(document.getElementById('reviews').offsetTop)/max));
+  }
+  function active(p){
+    const a=sceneAnchors.apply ?? .58, r=sceneAnchors.reviews ?? .78;
+    return p<a?'v1':p<r?'v2':'v3';
   }
 
-  function getActiveKey(p) { return p <= SECTION_1_END ? 'v1' : p <= SECTION_2_END ? 'v2' : 'v3'; }
-
-  // Paint the current frame onto the canvas, cover-fit.
-  function drawFrame() {
-    var p = currentProgress;
-    var key = getActiveKey(p);
-    var video = videos[key];
-    // On iOS a video that has never played can sit at readyState 1 forever,
-    // and drawImage() from it paints nothing. Fall back to the still so the
-    // page is never a black rectangle.
-    var source = (video && video.readyState >= 2) ? video : null;
-    if (!source) {
-      // Once real video frames are flowing, never fall back again: during a
-      // fast scroll readyState dips briefly, and swapping in a poster would
-      // flash frame 0. Holding the last painted frame is invisible.
-      if (videoDrawn) return;
-      var ph = posters[key];
-      if (ph && ph.complete && ph.naturalWidth) source = ph; else return;
-    }
-    if (source === video) videoDrawn = true;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);  // the video is at most 1080p, so a denser canvas adds GPU cost, not detail
-    var cW = canvas.width / dpr, cH = canvas.height / dpr;
-    if (cW === 0 || cH === 0) return;
-    var vW = source.videoWidth || source.naturalWidth || 1920, vH = source.videoHeight || source.naturalHeight || 1080;
-    var vA = vW / vH, cA = cW / cH;
-    var dW = cW, dH = cH, oX = 0, oY = 0;
-    if (vA > cA) { dW = cH * vA; oX = (cW - dW) / 2; }
-    else { dH = cW / vA; oY = (cH - dH) / 2; }
-    // Opaque canvas: the page behind it is black anyway, and the browser can skip blending.
-    if (!canvasCtx) canvasCtx = canvas.getContext('2d', { alpha: false });
-    if (!canvasCtx) return;
-    try {
-      // Cover-fit always fills the whole canvas, so there is nothing to clear first. The browser
-      // shows only finished frames, and if drawImage throws the previous frame simply stays.
-      canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      canvasCtx.drawImage(source, oX, oY, dW, dH);
-      if (!painted) { painted = true; revealStage(); }
-    } catch(e) {}
+  function draw(){
+    const k=active(progress),v=videos[k];
+    let src=(v&&v.readyState>=2)?v:null;
+    if(!src){src=posters[k]; if(!src||!src.complete||!src.naturalWidth)return;}
+    const d=Math.min(devicePixelRatio||1,1.5),w=canvas.width/d,h=canvas.height/d;
+    const vw=src.videoWidth||src.naturalWidth||1920,vh=src.videoHeight||src.naturalHeight||1080;
+    const va=vw/vh,ca=w/h; let dw=w,dh=h,ox=0,oy=0;
+    if(va>ca){dw=h*va;ox=(w-dw)/2}else{dh=w/va;oy=(h-dh)/2}
+    ctx.setTransform(d,0,0,d,0,0);
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+    try{ctx.drawImage(src,ox,oy,dw,dh)}catch(e){}
   }
 
-  function handleResize() {
-    var parent = canvas.parentElement;
-    if (!parent) return;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);  // the video is at most 1080p, so a denser canvas adds GPU cost, not detail
-    var w = parent.clientWidth, h = parent.clientHeight;
-    canvas.width = w * dpr; canvas.height = h * dpr;
-    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-    drawFrame();
+  function seekToProgress(force=false){
+    const now=performance.now();
+    if(!force && now-lastSeekAt<42)return;
+    const k=active(progress),v=videos[k],dur=durations[k]||v?.duration||0;
+    if(!v||!dur||v.seeking||backgroundReduced.matches)return;
+    if(k!==lastActive){lastActive=k; lastSeek={v1:-1,v2:-1,v3:-1};}
+    const a=sceneAnchors.apply ?? .58, r=sceneAnchors.reviews ?? .78;
+    const start=k==='v1'?0:k==='v2'?a:r;
+    const span=k==='v1'?a:k==='v2'?(r-a):(1-r);
+    const local=Math.max(0,Math.min(1,(progress-start)/span));
+    const t=local*Math.max(0,dur-0.03);
+    if(!force && Math.abs((lastSeek[k]??-1)-t)<0.045)return;
+    lastSeek[k]=t; lastSeekAt=now; pendingDraw=true;
+    try{v.pause(); v.currentTime=t;}catch(e){}
   }
 
-  function safeSeek(key, targetTime) {
-    var video = videos[key];
-    if (!video) return;
-    var dur = durations[key] || video.duration || 10;
-    var clamped = Math.max(0, Math.min(targetTime, dur - 0.05));
-    if (Math.abs(video.currentTime - clamped) < 0.01) return;
-    if (seeking[key]) { pendingSeek[key] = clamped; return; }
-    seeking[key] = true; pendingSeek[key] = -1;
-    video.currentTime = clamped;
-  }
-
-  ['v1','v2','v3'].forEach(function(key) {
-    videos[key].addEventListener('seeked', function() {
-      seeking[key] = false;
-      if (key === getActiveKey(currentProgress)) drawFrame();
-      if (pendingSeek[key] >= 0) { var t = pendingSeek[key]; pendingSeek[key] = -1; safeSeek(key, t); }
-    });
-  });
-
-  // Loading
-  function checkAllReady() {
-    if (metaLoaded.v1 && metaLoaded.v2 && metaLoaded.v3) {
-      setTimeout(function() { revealStage(); handleResize(); }, 100);
+  let scrollRAF=0;
+  function updateTarget(){
+    const maxScroll=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    target=Math.max(0,Math.min(1,scrollY/maxScroll));
+    if(!scrollRAF){
+      scrollRAF=requestAnimationFrame(()=>{
+        scrollRAF=0;
+        seekToProgress();
+      });
     }
   }
-  ['v1','v2','v3'].forEach(function(key) {
-    var el = videos[key];
-    function onMeta() {
-      var d = el.duration;
-      if (d && !isNaN(d) && d > 0 && d !== Infinity) { durations[key] = d; metaLoaded[key] = true; checkAllReady(); }
-    }
-    el.addEventListener('loadedmetadata', onMeta);
-    el.addEventListener('durationchange', onMeta);
-    el.addEventListener('canplay', onMeta);
-    // Only a hard failure earns the blocking overlay: if a poster painted,
-    // the page is usable and an error card would just get in the way.
-    el.addEventListener('error', function() {
-      if (!painted) errorScreen.classList.add('show');
-    });
-    if (el.readyState >= 1) onMeta();
-  });
-  setTimeout(function() {
-    ['v1','v2','v3'].forEach(function(key) {
-      if (!metaLoaded[key]) { durations[key] = videos[key].duration || 10; metaLoaded[key] = true; }
-    });
-    checkAllReady();
-  }, METADATA_TIMEOUT_MS);
 
-  handleResize();
-  primeVideos();
-  var lastPrimeAttempt = 0;
-  function retryPrime() {
-    var now = Date.now();
-    if (now - lastPrimeAttempt < PRIME_RETRY_MS) return;
-    lastPrimeAttempt = now;
-    primeVideos();
-  }
-  ['touchstart','pointerdown','click','scroll'].forEach(function(evt) {
-    window.addEventListener(evt, retryPrime, { passive: true });
-  });
-
-  window.addEventListener('resize', handleResize);
-
-  // Cursor parallax
-  window.addEventListener('mousemove', function(e) {
-    var x = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
-    var y = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
-    bgWrapper.style.transform = 'translate3d(' + (x * -24) + 'px,' + (y * -24) + 'px,0)';
-  });
-
-  // Scroll progress
-  window.addEventListener('scroll', function() {
-    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    var maxScroll = container.scrollHeight - window.innerHeight;
-    targetProgress = maxScroll > 0 ? Math.max(0, Math.min(1, scrollTop / maxScroll)) : 0;
-  }, { passive: true });
-
-  // Helpers
-  function setVisible(el, v) { if (!el) return; el.style.visibility = v ? 'visible' : 'hidden'; el.style.pointerEvents = v ? 'auto' : 'none'; }
-  function applyStyle(el, op, tx, ty, bl) {
-    if (!el) return;
-    el.style.opacity = op;
-    el.style.transform = 'translate3d(' + tx + 'px,' + ty + 'px,0)';
-    el.style.filter = 'blur(' + bl + 'px)';
-  }
-
-  var CARD_BLUR = 16, PARA_BLUR = 20, PARA_SHIFT = 120;
-
-  // Cards fade/blur in as they enter, then back out past the first seam.
-  function animCard(p, el, enterStart, enterDur, exitStart, exitDur, tx, ty) {
-    if (!el) return;
-    var op = 0, bl = CARD_BLUR, x = tx, y = ty, r;
-    if (p >= enterStart && p <= SECTION_1_END) {
-      r = Math.min(1, Math.max(0, (p - enterStart) / enterDur));
-      op = r; bl = (1 - r) * CARD_BLUR; x = (1 - r) * tx; y = (1 - r) * ty;
-    } else if (p > SECTION_1_END && p <= exitStart + exitDur) {
-      r = Math.min(1, Math.max(0, (p - exitStart) / exitDur));
-      op = 1 - r; bl = r * CARD_BLUR; x = r * tx; y = r * ty;
-    }
-    applyStyle(el, op, x, y, bl);
-  }
-
-  // Paragraphs rise in, hold, then rise out.
-  function animPara(p, el, inS, inE, holdE, outE) {
-    if (!el) return;
-    var op = 0, bl = PARA_BLUR, y = PARA_SHIFT, r;
-    if (p >= inS && p < inE) { r = (p - inS) / (inE - inS); op = r; bl = (1 - r) * PARA_BLUR; y = (1 - r) * PARA_SHIFT; }
-    else if (p >= inE && p <= holdE) { op = 1; bl = 0; y = 0; }
-    else if (p > holdE && p <= outE) { r = (p - holdE) / (outE - holdE); op = 1 - r; bl = r * PARA_BLUR; y = r * -PARA_SHIFT; }
-    else if (p > outE) { op = 0; bl = PARA_BLUR; y = -PARA_SHIFT; }
-    applyStyle(el, op, 0, y, bl);
-  }
-
-  // Main rAF loop
-  function tick() {
-    currentProgress += (targetProgress - currentProgress) * SCROLL_EASE;
-    var p = currentProgress;
-
-    var activeKey = getActiveKey(p);
-    var sectionStart = activeKey === 'v1' ? 0 : activeKey === 'v2' ? SECTION_1_END : SECTION_2_END;
-    var pLocal = Math.max(0, Math.min(1, (p - sectionStart) * SECTION_SCALE));
-    safeSeek(activeKey, pLocal * (durations[activeKey] || 10));
-
-    // Botanical Card
-    var f = Math.min(1, Math.max(0, p / 0.15));
-    applyStyle(botanicalCard, 1 - f, f * -35, f * 35, f * 16);
-    botanicalCard.style.pointerEvents = f > 0.95 ? 'none' : 'auto';
-
-    // Nav header
-    f = Math.min(1, Math.max(0, (p - 0.03) / 0.15));
-    applyStyle(navHeader, 1 - f, 0, f * -35, f * 14);
-    navHeader.style.pointerEvents = f > 0.95 ? 'none' : 'auto';
-
-    // Brand header
-    f = Math.min(1, Math.max(0, (p - 0.06) / 0.15));
-    applyStyle(brandHeader, 1 - f, f * -25, f * -35, f * 12);
-    brandHeader.style.pointerEvents = f > 0.95 ? 'none' : 'auto';
-
-    // Feature cards
-    setVisible(featuresContainer, p > 0.13 && p < 0.55);
-    animCard(p, fCard1, 0.15, 0.15, SECTION_1_END, 0.12, -35, 35);
-    animCard(p, fCard2, 0.18, 0.13, SECTION_1_END, 0.15, 0, 35);
-    animCard(p, fCard3, 0.21, 0.11, SECTION_1_END, 0.18, 35, 35);
-
-    // Mission paragraphs
-    setVisible(missionContainer, p > 0.44);
-    animPara(p, mPara1, 0.44, 0.47, 0.59, 0.62);
-    animPara(p, mPara2, 0.62, 0.65, 0.77, 0.80);
-    animPara(p, mPara3, 0.80, 0.83, 0.95, 0.98);
-
-    // Feedback form
-    setVisible(feedbackContainer, p > 0.93);
-    if (p > 0.93) {
-      var opF = 0, blF = 20, yF = 120;
-      if (p >= 0.94 && p < 0.97) { var r = (p - 0.94) / 0.03; opF = r; blF = (1 - r) * 20; yF = (1 - r) * 120; }
-      else if (p >= 0.97) { opF = 1; blF = 0; yF = 0; }
-      applyStyle(feedbackForm, opF, 0, yF, blF);
-    }
-
+  function tick(){
+    const diff=target-progress;
+    progress+=diff*.095;
+    if(Math.abs(diff)<.00008)progress=target;
+    seekToProgress();
     requestAnimationFrame(tick);
   }
+
+  refreshSceneAnchors();
+  resize();
+  addEventListener('resize',()=>{refreshSceneAnchors();resize();},{passive:true});
+  addEventListener('mousemove',e=>{
+    if(!matchMedia('(hover:hover)').matches||backgroundReduced.matches)return;
+    const x=(e.clientX-innerWidth/2)/(innerWidth/2),y=(e.clientY-innerHeight/2)/(innerHeight/2);
+    bg.style.transform=`translate3d(${x*-10}px,${y*-10}px,0)`;
+  },{passive:true});
+  addEventListener('scroll',updateTarget,{passive:true});
   requestAnimationFrame(tick);
 
-  // Hamburger menu
-  var menuOpen = false;
-  var hamburgerBtn = document.getElementById('hamburgerBtn');
-  var mobileMenu = document.getElementById('mobileMenu');
-  var hLine1 = document.getElementById('hLine1');
-  var hLine2 = document.getElementById('hLine2');
-  var hLine3 = document.getElementById('hLine3');
-
-  function setMenu(open) {
-    menuOpen = open;
-    mobileMenu.classList.toggle('open', open);
-    hLine1.classList.toggle('top-open', open);
-    hLine2.classList.toggle('mid-open', open);
-    hLine3.classList.toggle('bot-open', open);
-    hamburgerBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    hamburgerBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  }
-
-  hamburgerBtn.addEventListener('click', function() { setMenu(!menuOpen); });
-  mobileMenu.querySelectorAll('a').forEach(function(a) {
-    a.addEventListener('click', function() { setMenu(false); });
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && menuOpen) { setMenu(false); hamburgerBtn.focus(); }
-  });
-
-  // CTA button
-  // The CTA jumps to the feature cards. Card 3 is the last to finish fading
-  // in (0.21 + 0.11 = 0.32) and all three start leaving at SECTION_1_END, so
-  // this lands in the short window where the row is fully composed.
-  var FEATURES_FOCUS = 0.332;
-  document.getElementById('ctaBtn').addEventListener('click', function() {
-    var maxScroll = container.scrollHeight - window.innerHeight;
-    window.scrollTo({ top: maxScroll * FEATURES_FOCUS, behavior: 'smooth' });
-  });
-
-  // Feedback form: front-end only, nothing is sent anywhere yet.
-  // Connect it to your mailing-list provider inside this submit handler.
-  var fbForm = document.getElementById('fbForm');
-  var fbBtn = document.getElementById('fbBtn');
-  var fbSuccess = document.getElementById('fbSuccess');
-  fbForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var email = document.getElementById('fbEmail').value.trim();
-    if (email) {
-      fbBtn.textContent = 'REGISTERED';
-      fbBtn.classList.add('submitted');
-      fbBtn.disabled = true;
-      fbSuccess.classList.add('show');
+  // Circular layouts have one DOM node per card: no clones or autoplay.
+  function circularCards(root,cards,options={}){
+    const count=cards.length,vertical=!!options.vertical;
+    let index=0,drag=null,queued=0;const previousOffsets=new WeakMap();
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+    function spacing(){return vertical?Math.min(root.clientHeight*.66,cards[0].offsetHeight*.8):Math.min(root.clientWidth*.65,cards[0].offsetWidth*.88);}
+    function render(delta=0){
+      queued=0;const distance=spacing();
+      cards.forEach((card,i)=>{
+        let off=(i-index+count)%count;if(off>count/2)off-=count;
+        const oldOffset=previousOffsets.get(card);
+        if(oldOffset!==undefined&&Math.abs(oldOffset-off)>count/2){card.style.transition='none';requestAnimationFrame(()=>requestAnimationFrame(()=>{card.style.transition='';}));}
+        previousOffsets.set(card,off);
+        const offset=off+delta/distance,abs=Math.abs(offset),visible=Math.abs(off)<=2;
+        const scale=Math.max(.84,1-Math.min(abs,2)*.065);
+        const x=vertical?0:offset*distance,y=vertical?offset*distance:Math.min(abs,1)*9;
+        card.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y}px,${-Math.min(abs,2)*35}px) scale(${scale})`;
+        card.style.opacity=visible?(abs<.5?1:.78):0;card.style.zIndex=String(20-Math.round(abs*3));
+        card.style.pointerEvents=visible?'auto':'none';card.inert=!visible;card.setAttribute('aria-hidden',String(!visible));
+      });
+      if(options.status)options.status.textContent=(index+1)+' / '+count;
     }
-  });
+    function step(value){index=(index+value%count+count)%count;render();}
+    options.previous?.addEventListener('click',()=>step(-1));options.next?.addEventListener('click',()=>step(1));
+    root.addEventListener('keydown',e=>{if(e.target.closest('summary,a,button'))return;const back=vertical?'ArrowUp':'ArrowLeft',forward=vertical?'ArrowDown':'ArrowRight';if(e.key===back||e.key===forward){e.preventDefault();step(e.key===forward?1:-1);}if(e.key==='Home'||e.key==='End'){e.preventDefault();index=e.key==='Home'?0:count-1;render();}});
+    root.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('a,button,summary,.program-topics'))return;drag={id:e.pointerId,start:vertical?e.clientY:e.clientX,last:vertical?e.clientY:e.clientX,time:performance.now(),velocity:0,delta:0};root.classList.add('loop-dragging');root.setPointerCapture(e.pointerId);});
+    root.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const position=vertical?e.clientY:e.clientX,now=performance.now();drag.velocity=(position-drag.last)/Math.max(1,now-drag.time);drag.last=position;drag.time=now;drag.delta=position-drag.start;const delta=drag.delta;if(!queued)queued=requestAnimationFrame(()=>render(delta));});
+    function release(e){if(!drag||drag.id!==e.pointerId)return;const velocity=performance.now()-drag.time<90?drag.velocity:0;const delta=drag.delta+Math.max(-spacing()*.45,Math.min(spacing()*.45,velocity*100));drag=null;if(queued){cancelAnimationFrame(queued);queued=0;}root.classList.remove('loop-dragging');if(root.hasPointerCapture(e.pointerId))root.releasePointerCapture(e.pointerId);const n=Math.abs(delta)>32?Math.round(-delta/spacing())||(-Math.sign(delta)):0;step(n);}
+    root.addEventListener('pointerup',release);root.addEventListener('pointercancel',release);root.addEventListener('lostpointercapture',release);root.addEventListener('dragstart',e=>e.preventDefault());
+    addEventListener('resize',()=>render(),{passive:true});render();return {render,step};
+  }
+  const directionRail=document.getElementById('directionsRail');
+  const directionCards=[...directionRail.querySelectorAll('.direction-card')];
+  circularCards(directionRail,directionCards,{previous:document.getElementById('directionPrev'),next:document.getElementById('directionNext'),status:document.getElementById('directionPosition')});
+  const resultRoot=document.getElementById('aiResultsRail');
+  circularCards(resultRoot,[...resultRoot.querySelectorAll('.ai-result-card')],{vertical:true,previous:document.getElementById('aiPrev'),next:document.getElementById('aiNext'),status:document.getElementById('aiPosition')});
+  const reviewRoot=document.getElementById('reviewStage');
+  reviewRoot.tabIndex=0;reviewRoot.setAttribute('aria-label','Отзывы: листайте стрелками или жестом');
+  circularCards(reviewRoot,[...reviewRoot.querySelectorAll('.review-card')],{previous:document.getElementById('reviewPrev'),next:document.getElementById('reviewNext'),status:document.getElementById('reviewPosition')});
+
+  const curriculumDesktop=matchMedia('(min-width:1024px)');
+  const mainCards=[...document.querySelectorAll('.main-program')];
+  const addonCards=[...document.querySelectorAll('.addon-card')];
+  let sizeFrame=0;
+  function sizeProgramGroup(cards,property){
+    if(!cards.length)return;
+    const largest=Math.max(...cards.map(card=>{const style=getComputedStyle(card);const inside=card.querySelector('.program-inner');return inside.offsetHeight+parseFloat(style.paddingTop)+parseFloat(style.paddingBottom)+parseFloat(style.borderTopWidth)+parseFloat(style.borderBottomWidth);}));
+    document.getElementById('courses').style.setProperty(property,Math.ceil(largest)+'px');
+  }
+  function sizePrograms(){sizeFrame=0;sizeProgramGroup(mainCards,'--main-height');refreshSceneAnchors();updateTarget();}
+  function requestProgramSizing(){if(!sizeFrame)sizeFrame=requestAnimationFrame(sizePrograms);}
+  function setCurriculumDefaults(){mainCards.forEach(card=>{card.querySelector('details').open=curriculumDesktop.matches;});requestProgramSizing();}
+  document.querySelectorAll('.program-disclosure').forEach(details=>details.addEventListener('toggle',requestProgramSizing));
+  curriculumDesktop.addEventListener('change',setCurriculumDefaults);
+  const programObserver=typeof ResizeObserver!=='undefined'?new ResizeObserver(requestProgramSizing):null;
+  document.querySelectorAll('.program-inner').forEach(inner=>programObserver?.observe(inner));
+  addEventListener('resize',requestProgramSizing,{passive:true});document.fonts?.ready.then(requestProgramSizing);
+  setCurriculumDefaults();
+
+  document.querySelectorAll('[data-program]').forEach(link=>link.addEventListener('click',()=>{const input=document.querySelector('#leadForm input[placeholder^="Например"]');if(input)input.value=link.dataset.program;}));
+
+  document.querySelector('.back-to-top').addEventListener('click',event=>{event.preventDefault();document.getElementById('top').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});
+  document.querySelectorAll('.faq-item').forEach(item=>item.addEventListener('toggle',()=>{refreshSceneAnchors();updateTarget();}));
+  document.querySelectorAll('.program-disclosure').forEach(item=>item.addEventListener('toggle',()=>{refreshSceneAnchors();updateTarget();}));
+  document.getElementById('leadForm').addEventListener('submit',e=>{e.preventDefault();const b=e.currentTarget.querySelector('button');b.textContent='ЗАЯВКА ОТПРАВЛЕНА';b.disabled=true;});
+  document.getElementById('refBtn').addEventListener('click',()=>{const b=document.getElementById('refBtn');b.textContent='ОТПРАВЛЕНО';});
 })();
 </script>
 </body>
 </html>
+
+<style>
+.social-eyebrow{font-family:var(--sans);font-size:14px;letter-spacing:.16em;color:#fff;font-weight:700;text-transform:uppercase;text-shadow:0 3px 16px rgba(0,0,0,.95);margin-bottom:18px}
+</style>
+
+<style>
+.field label,.field input,.field textarea,.field select{color:#fff !important;-webkit-text-stroke:0 !important;text-shadow:none !important;}
+.field label{font-weight:700;}
+.field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.48)!important;}
+</style>
